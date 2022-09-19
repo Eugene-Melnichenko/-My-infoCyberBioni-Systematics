@@ -1,6 +1,16 @@
 /*
     1. Навигация по DOM элементам
     2. Изменение DOM дерева
+	3. Событие!
+		3.1. Пример обработчика событий №1!
+		3.2. Пример обработчика событий №2!
+		3.3. Пример обработчика событий №3(Самий актуальний)!
+		3.4. Пример №4 использование метода onclick() и форм input!
+		3.5. Пример №5 использование метода 'addEventListener'!
+		3.6. Пример №6 использование метода 'addEventListener' более подробно!
+		3.7. Пример №7 удаляем обработчик на событие click!
+		3.8. Пример №8 при событии 'onclick', добавляем новый объект!
+		3.9. Пример №9 всем кнопкам через forEach, добавляем метод!
 
 
 */
@@ -317,7 +327,6 @@ document.body.append(divElement); // 1.4. добавляем divElement в ст�
         <p>Element 5</p>
     </div>
 */
-
 let div1 = document.createElement("div");
 div1.textContent = "Hello world 1";
 div1.className = "inserted-div";
@@ -627,3 +636,242 @@ console.log(`height=${computedStyles.height} width = ${computedStyles.width}`); 
 // получение вычисленных стилей для псевдоэлемента div::selection
 let computedStylesSelection = getComputedStyle(div, ":selection");
 console.log(`background-color on hover=${computedStylesSelection.backgroundColor}`);    //background-color on hover=rgb(255, 255, 0)
+
+
+
+
+
+
+
+
+
+
+// ______3. Событие ____________________________________!!!!!
+/*
+Событие – это сигнал, который сообщает о наступлении определенного состояния некоторого объекта.
+Обработчик события – функция, которая запускается в случае возникновения события.
+*/
+/*
+	click - нажатие левой клавиши мыши
+	contextmenu - нажатие правой клавиши мыши
+	keydown - клавиша на клавиатуре зажата
+	keyup - клавиша на клавиатуре отпущена
+	submit - пользователь отправил форму (нажал на кнопку submit для form)
+	mouseout - курсор вышел за пределы элемента
+	mouseover - курсор вошел в область элемента
+	mousedown - зажата клавиша мыши
+	mouseup - отпущена клавиша мыши 
+	mousemove - курсор перемещается по элементу
+*/
+
+
+
+//Пример обработчика событий №1!
+/*
+    onclick - атрибут, через который задается обработчик события click
+    В качестве значения данного атрибута используется JavaScrip код, который выполнится, при возникновении события
+
+    <div onclick="alert('Сработал обработчик события');
+                  console.log('Hello Eugene');
+                  let box = document.querySelector('div');
+                  box.style.backgroundColor='green'; ">
+        Click me
+    </div>
+*/
+
+
+
+//Пример обработчика событий №2!
+/*	HTML
+    <div onclick="showMessage()">
+        Click me
+    </div>
+*/
+function showMessage() {
+    alert('Сработал обработчик события, вынесенный в функцию');
+}
+
+
+
+//Пример обработчика событий №3(Самий актуальний)!
+/*	HTML
+    <div id="my-div">
+        Click me
+    </div>
+*/
+let div = document.querySelector("#my-div");
+// Избегайте использования атрибутов для обработки событий.
+// Ненавязчивый JavaScript код, который устанавливает обработчики через свойства или метод addEventListener
+// проще сопровождать.
+div.onclick = showMessage;
+
+function showMessage() {
+    alert('Сработал обработчик события, установленный через свойство');
+}
+//________________Или________________!!!
+div.onclick = function () {
+    alert('Сработал обработчик события, установленный через свойство');
+}
+
+
+
+//Пример №4 использование метода onclick() и форм input!
+/*	HTML
+ 	Операнд 1: <input id="input1" type="text"> <br />
+    Операнд 2: <input id="input2" type="text"> <br />
+
+    <button id="add-btn">+</button>
+    <button id="rem-btn">-</button>
+    <button id="mul-btn">*</button>
+    <button id="div-btn">/</button>
+*/
+
+
+// получение элементов input
+// для получения введенного значения используется свойство value
+let input1 = document.querySelector("#input1");
+let input2 = document.querySelector("#input2");
+
+// получение кнопок
+let addBtn = document.querySelector("#add-btn");
+let remBtn = document.querySelector("#rem-btn");
+let mulBtn = document.querySelector("#mul-btn");
+let divBtn = document.querySelector("#div-btn");
+
+// Установка обработчиков на событие click по кнопкам
+addBtn.onclick = add;
+remBtn.onclick = rem;
+mulBtn.onclick = mul;
+divBtn.onclick = div;
+
+function add() {
+    // для избегания конкатенации преобразовываем значение поля ввода в число
+    alert(Number(input1.value) + Number(input2.value));
+}
+
+function rem() {
+    alert(input1.value - input2.value);
+}
+
+function mul() {
+    alert(input1.value * input2.value);
+}
+
+function div() {
+    alert(input1.value / input2.value);
+}
+
+
+
+
+//Пример №5 использование метода 'addEventListener'!
+/* HTML
+	<button id="my-btn">Click Me!</button>
+*/
+let btn = document.querySelector("#my-btn");
+// addEventListener - функция для установки обработчика события
+// первый параметр - имя события без приставки on
+// второй параметр - функция обработчик
+btn.addEventListener("click", handler);
+function handler() {
+    alert("Обработчик события click, установленный с помощью addEventListener");
+}
+
+//Пример №6 использование метода 'addEventListener' более подробно!
+/* HTML
+ 	Операнд 1: <input id="input1" type="text"> <br />
+    Операнд 2: <input id="input2" type="text"> <br />
+
+    <button id="add-btn">+</button>
+    <button id="rem-btn">-</button>
+    <button id="mul-btn">*</button>
+    <button id="div-btn">/</button>
+*/
+let input1 = document.querySelector("#input1");
+let input3 = document.querySelector("#input2");
+
+let addBtn = document.querySelector("#add-btn");
+let remBtn = document.querySelector("#rem-btn");
+let mulBtn = document.querySelector("#mul-btn");
+let divBtn = document.querySelector("#div-btn");
+
+addBtn.addEventListener("click", function () {
+    alert(Number(input1.value) + Number(input2.value));
+});
+remBtn.addEventListener("click", function () {
+    alert(input1.value - input2.value);
+});
+mulBtn.addEventListener("click", function () {
+    alert(input1.value * input2.value);
+});
+divBtn.addEventListener("click", function () {
+    alert(input1.value / input2.value);
+});
+
+
+
+//Пример №7 удаляем обработчик на событие click!
+/* HTML
+	<button id="testBtn">Click me</button>
+	<button id="removeHandlerBtn">Удалить обработчик события</button>
+*/
+
+let testBtn = document.querySelector("#testBtn");
+let removeHandlerBtn = document.querySelector("#removeHandlerBtn");
+
+function handler() {
+    alert("Обработчик события");
+}
+
+testBtn.addEventListener("click", handler); // устанавливаем обработчик на событие click
+
+removeHandlerBtn.addEventListener("click", function () {
+    testBtn.removeEventListener("click", handler); // удаляем обработчик на событие click
+});
+
+
+//Пример №8 при событии 'onclick', добавляем новый объект!
+let taskNameInput = document.querySelector("#task-name-input");
+let addTaskButton = document.querySelector("#add-task-btn");
+let taskList = document.querySelector(".task-list");
+
+
+//1. При нажатии на Button '#add-task-btn', вызываем функцию 'addTaskHandler()'
+addTaskButton.addEventListener("click", addTaskHandler);
+
+//3. createTask(taskNameInput.value) = функция принимает значения из value
+function createTask(text) {
+    let div = document.createElement("div");
+    div.classList.add("task");
+
+    let input = document.createElement("input");
+    input.type = "checkbox";
+
+    let p = document.createElement("p");
+    p.innerText = text;
+
+    div.append(input);
+    div.append(p);
+
+    return div;
+}
+
+//2. В которой создаем новый 'div', из функции 'createTask()' и добавляем в 'taskList'
+function addTaskHandler() {
+    let newTask = createTask(taskNameInput.value);
+    taskList.append(newTask);
+}
+
+
+
+//Пример №9 всем кнопкам через forEach, добавляем метод!
+// находим все кнопки
+let buttons = document.querySelectorAll("button");
+// устанавливаем для всех кнопок одну и ту же функцию (clickHandler) в качестве обработчика события click
+buttons.forEach(btn => {
+    btn.addEventListener("click", clickHandler);
+});
+
+function clickHandler() {
+    alert(this.textContent); // this - указывает на ту кнопку, для которой обрабатывается в данный момент событие.
+}
