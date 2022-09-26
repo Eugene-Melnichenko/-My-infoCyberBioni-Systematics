@@ -1,7 +1,7 @@
 /*
     1. Навигация по DOM элементам
     2. Изменение DOM дерева
-	3. Событие!
+	3. Событие часть 1!
 		3.1. Пример обработчика событий №1!
 		3.2. Пример обработчика событий №2!
 		3.3. Пример обработчика событий №3(Самий актуальний)!
@@ -11,10 +11,19 @@
 		3.7. Пример №7 удаляем обработчик на событие click!
 		3.8. Пример №8 при событии 'onclick', добавляем новый объект!
 		3.9. Пример №9 всем кнопкам через forEach, добавляем метод!
-
-
+	4. Событие часть 2!
+		4.1. Выполнения кода JS, после загрузки hyml, css страницы!
+		4.2. Выполнения кода JS, после загрузки всей страницы вместе с изображениями, таблицами и т.д.!
+		4.3. Event – интерфейс!
+		4.4. Пример использования события mouseover, mouseout, mousemove!
+		4.5. Пример использования события click, mousedown, mouseup!
+		4.6. Пример использования события на нажатия клавиш Shift, Alt!, Ctrl, Meta!
+		4.7. Отслеживание других клавиш на клавиатуре (keydown, keyup)!
+		4.8. Перемещение елемента div!
+		4.9. Пример перемещения блока div клавишами вверх, вниз, вправо, влево (типа змейка)!
+    5. Событие часть 3!
+        5.1. 
 */
-
 
 
 
@@ -646,7 +655,7 @@ console.log(`background-color on hover=${computedStylesSelection.backgroundColor
 
 
 
-// ______3. Событие ____________________________________!!!!!
+// ______3. Событие часть 1____________________________________!!!!!
 /*
 Событие – это сигнал, который сообщает о наступлении определенного состояния некоторого объекта.
 Обработчик события – функция, которая запускается в случае возникновения события.
@@ -875,3 +884,258 @@ buttons.forEach(btn => {
 function clickHandler() {
     alert(this.textContent); // this - указывает на ту кнопку, для которой обрабатывается в данный момент событие.
 }
+
+
+
+
+
+
+
+
+
+// ______4. Событие часть 2____________________________________!!!!!
+//4.1. Выполнения кода JS, после загрузки страницы!
+
+// DOMContentLoaded - браузер загрузил разметку и построил DOM дерево, 
+// но внешние ресурсы, например картинки, могут еще загружаться. 
+document.addEventListener("DOMContentLoaded", function () {
+    let div = document.querySelector("#testDiv")
+    let img = document.querySelector("#testImg")
+   
+    console.log(div.textContent);
+    console.log(getComputedStyle(img).width); // 0px -так как внешние ресурсы еще не загружены размер картинки неизвестен
+});
+
+
+
+//4.2. Выполнения кода JS, после загрузки всей страницы вместе с изображениями, таблицами и т.д.!
+// load - HTML и внешние ресурсы загружены. 
+// Данное событие срабатывает на объекте window, DOMContentLoaded - на document
+// Для большинства задач, достаточно события DOMContentLoaded
+window.addEventListener("load", function () {
+    let div = document.querySelector("#testDiv")
+    let img = document.querySelector("#testImg")
+
+    console.log(div.textContent);
+    console.log(getComputedStyle(img).width);
+});
+
+
+/*
+	Возникшее в DOM событие представляется объектом, которому можно получить доступ через параметр метода обработчика.
+	Event – интерфейс, который представляет событие возникшее в DOM. (Под интерфейсом подразумевается набор свойств и методов).
+*/
+
+
+
+//4.3. Event – интерфейс!
+/*	HTML
+    <button id="testBtn">Click me</button>
+*/
+document.querySelector("#testBtn").addEventListener("click", handler);
+
+// Обработчик события может принимать параметр, в который, в случае возникновения события,
+// будет записываться объект события с дополнительной информацией.
+function handler(e) {
+    console.log(e);
+}
+
+
+
+//4.4. Пример использования события mouseover, mouseout, mousemove!
+/*	HTML
+    <div class="rect" id="testDiv"></div>
+*/
+    let div = document.querySelector("#testDiv");
+    div.addEventListener("mouseover", mouseOverHanderl); // курсор попал в div
+    div.addEventListener("mouseout", mouseOutHanderl); // курсор вышел за пределы div
+    div.addEventListener("mousemove", mouseMoveHanderl); // курсор перемещается по div
+
+    function mouseOutHanderl() {
+        div.style.backgroundColor = "green";
+    }
+
+    function mouseOverHanderl() {
+        div.style.backgroundColor = "orange";
+    }
+
+    function mouseMoveHanderl(e) {
+        let message = `X:${e.clientX}; Y:${e.clientY}`;
+        //  message = `X:${e.offsetX}; Y:${e.offsetY}`;
+        //  message = `X:${e.layerX}; Y:${e.layerY}`;
+        //  message = `X:${e.pageX}; Y:${e.pageY}`;       
+        div.textContent = message;
+    }
+
+
+
+
+//4.5. Пример использования события click, mousedown, mouseup!
+let testButton = document.querySelector("#testBtn");
+let resetButton = document.querySelector("#resetBtn");
+let output = document.querySelector("#output");
+
+resetButton.addEventListener("click", function() {
+    output.innerHTML = "";
+})
+
+// which нажатая клавиша на мыши
+// 1 - левая
+// 2 - средняя
+// 3 - правая
+
+//Когда кликнули
+testButton.addEventListener("click", function(e) {
+    output.innerHTML += "click which=" + e.which + "<br />";
+    //output.innerHTML += "click which=" + e.button + "<br />"; //Этот вариант лучше!
+});
+
+//Когда навели
+testButton.addEventListener("mousedown", function(e) {
+    output.innerHTML += "mousedown which=" + e.which + "<br />";
+});
+
+//Когда убрали
+testButton.addEventListener("mouseup", function(e) {
+    output.innerHTML += "mouseup which=" + e.which + "<br />";
+});
+
+
+
+
+//4.6. Пример использования события на нажатия клавиш Shift, Alt!, Ctrl, Meta 
+/*	HTML
+	<div id="testDiv" class="rect"></div>
+*/
+let div = document.querySelector("#testDiv");
+div.addEventListener("click", function (e) {
+    let message = "Click с зажатой клавишей";
+
+    if (e.shiftKey) {
+        message += " Shift";
+    }
+    if (e.altKey) {
+        message += " Alt";
+    }
+    if (e.ctrlKey) {
+        message += " Ctrl";
+    }
+    if (e.metaKey) {
+        message += " Meta";
+    }
+
+    div.innerHTML = message;
+});
+
+
+
+
+
+
+//4.7. Отслеживание других клавиш на клавиатуре (keydown, keyup)!
+/*	HTML
+    <div id="output"></div>
+*/
+let output = document.querySelector("#output");
+
+document.addEventListener("keydown", function(e) {
+    let message = `keydown (Code = ${e.code}, Key = ${e.key})`;
+    output.innerHTML = message;
+});
+
+document.addEventListener("keyup", function(e) {
+    let message = `keyup (Code = ${e.code}, Key = ${e.key})`;
+    output.innerHTML = message;
+});
+
+
+
+
+//4.8. Перемещение елемента div!
+/*	HTML
+    <div id="testDiv" class="rect"></div>
+*/
+
+let div = document.querySelector("#testDiv");
+let move = false;
+let offsetX, offsetY;
+
+// при нажатии на div запоминаем отступ от курсора до левого верхнего угла div
+div.addEventListener("mousedown", function (e) {
+    move = true;
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+});
+
+// отлеживаем движение мыши по поверхности документа и перемещаем div
+// с учетом сохраненных отступов в момент нажатия левой клавиши мыши.
+// div перемещается только если переменная move == true
+document.addEventListener("mousemove", function (e) {
+    if (move) {
+        div.style.top = e.clientY - offsetY + "px";
+        div.style.left = e.clientX - offsetX + "px";
+    }
+});
+
+// в момент, когда клавиша отпускается прекращаем перемещение div
+document.addEventListener("mouseup", function (e) {
+    move = false;
+});
+
+
+
+//4.9. Пример перемещения блока div клавишами вверх, вниз, вправо, влево (типа змейка)!
+/*
+    #element {
+        width: 100px;
+        height: 100px;
+        background-color: greenyellow;
+        position: absolute;
+    }
+*/
+/* <div id="element"></div> */
+let div = document.querySelector("#element");
+let distance = 10;
+
+document.addEventListener("keydown", function (e) {
+    switch (e.code) {
+        case "ArrowLeft":
+            moveLeft(div, distance);
+            break;
+        case "ArrowRight":
+            moveRight(div, distance);
+            break;
+        case "ArrowUp":
+            moveUp(div, distance);
+            break;
+        case "ArrowDown":
+            moveDown(div, distance);
+            break;
+    }
+});
+
+function moveUp(element, distance) {
+    let top = getComputedStyle(element).top; // 10px 
+    element.style.top = parseInt(top) - distance + "px";
+}
+
+function moveDown(element, distance) {
+    let top = getComputedStyle(element).top;
+    element.style.top = parseInt(top) + distance + "px";
+}
+
+function moveLeft(element, distance) {
+    let left = getComputedStyle(element).left;
+    element.style.left = parseInt(left) - distance + "px";
+}
+
+function moveRight(element, distance) {
+    let left = getComputedStyle(element).left;
+    element.style.left = parseInt(left) + distance + "px";
+}
+
+
+
+
+
+// ______5. Событие часть 3____________________________________!!!!!
