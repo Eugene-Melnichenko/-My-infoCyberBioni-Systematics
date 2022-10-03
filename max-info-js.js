@@ -22,7 +22,15 @@
 		4.8. Перемещение елемента div!
 		4.9. Пример перемещения блока div клавишами вверх, вниз, вправо, влево (типа змейка)!
     5. Событие часть 3!
-        5.1. 
+        5.1. Фазы прохода события!
+        5.2. Bubbling Phase - фаза всплытия, событие движется от целевого элемента к корневому.
+        5.3. Bubbling Phase - пример №2.
+    	5.4. Event-phases- пример №3.
+    	5.5. Свойство target - элемент, который инициировал(запустил) событие!
+		5.6. Свойтсво stopPropagation - запретить событию продолжать двигаться по элементам.
+		5.7. Отмена действия(отмена вызова событий)!
+        5.8. Делегирование событий! (события на вложение элементы объекта)
+        5.9. Пример "Находим метод с именем, как в атрибуте data-action и вызываем его"
 */
 
 
@@ -1139,3 +1147,234 @@ function moveRight(element, distance) {
 
 
 // ______5. Событие часть 3____________________________________!!!!!
+//5.1. Фазы прохода события!
+/*
+	Capturing Phase (1) – фаза погружения или фаза перехвата, событие идет сверху вниз, от корневого элемента до того, который инициировал событие.
+	At Target Phase (2) – событие достигло целевого элемента.
+	Bubbling Phase (3) - фаза всплытия, событие движется от целевого элемента к корневому.
+*/
+
+
+
+//5.2. Bubbling Phase - фаза всплытия, событие движется от целевого элемента к корневому.
+//"""При клике на div3 событие происходит в div3, потом в div2 и в div1"""
+//Подобное поведение объясняется тем, что событие поднимается от целевого элемента к корневому
+//и при наличии обработчиков событие происходит на каждом элементе с обработчиком.
+/*
+	<div onclick="alert('div1')">
+	    div1
+	    <div onclick="alert('div2')">
+	        div2
+	        <div onclick="alert('div3')">
+	            div3
+	        </div>
+	    </div>
+	</div>
+*/
+
+
+
+//5.3. Bubbling Phase - пример №2.
+/*	HTML
+	<div id="div1">
+	    div1
+	    <div id="div2">
+	        div2
+	        <div id="div3">
+	            div3
+	        </div>
+	    </div>
+	</div>
+*/
+
+
+let phase = false; //false = сработает алерт div3, div2, div1;
+				   //true = сработает алерт div1, div2, div3;
+let div1 = document.querySelector("#div1");
+let div2 = document.querySelector("#div2");
+let div3 = document.querySelector("#div3");
+
+div1.addEventListener("click", function(){
+    alert("div1");
+    this.style.backgroundColor = "red";
+}, phase);
+
+div2.addEventListener("click", function(){
+    alert("div2");
+    this.style.backgroundColor = "green";
+}, phase);
+
+div3.addEventListener("click", function(){
+    alert("div3");
+    this.style.backgroundColor = "blue";
+}, phase);
+
+
+
+//5.4. Event-phases- пример №3.
+let divArray = document.querySelectorAll("div");
+divArray.forEach(div => {
+    div.addEventListener("click", handlerOnCapture, true); // обработка события на фазе погружения
+    //click, div1 = Фаза 1 (capture) div1
+    //click, div2 = Фаза 1 (capture) div1, Фаза 1 (capture) div2
+    //click, div3 = Фаза 1 (capture) div1, Фаза 1 (capture) div2, Фаза 1 (capture) div3
+
+    div.addEventListener("click", handlerOnBubble); // обработка события на фазе всплытия
+    //click, div1 = Фаза 3 (capture) div1
+    //click, div1 = Фаза 3 (capture) div2, Фаза 3 (capture) div1
+    //click, div1 = Фаза 3 (capture) div3, Фаза 3 (capture) div2, Фаза 3 (capture) div1
+});
+
+function handlerOnCapture() {
+    alert("Фаза 1 (capture) " + this.id);
+}
+
+function handlerOnBubble(e) {
+    alert("Фаза 3 (bubble) " + this.id);
+}
+
+
+//5.5 Свойство target - элемент, который инициировал(запустил) событие!
+let divArray = document.querySelectorAll("div");
+divArray.forEach(div => {
+    div.addEventListener("click", handler);
+});
+
+// данная функция установлена как обработчик события click для всех div на странице
+function handler(event) {
+    // event.target - элемент, который инициировал событие
+    // this - элемент, для которого срабатывает обработчик
+    alert(`this.id = ${this.id} event.target.id = ${event.target.id}`);
+}
+
+
+//5.6. Свойтсво stopPropagation - запретить событию продолжать двигаться по элементам.
+let divArray = document.querySelectorAll("div");
+divArray.forEach(div => {
+    div.addEventListener("click", handler, true);
+});
+
+function handler(event) {
+    alert(`this.id = ${this.id} event.target.id = ${event.target.id}`);
+    // stopPropagation - запретить событию продолжать двигаться по элементам.
+    // После вызова событие перестанет подниматься дальше по DOM элементам.
+    // event.stopPropagation();
+    
+    // Запретить подниматься событию, если происходит обработка события на элементе div2
+    if (this.id == "div2") {
+        event.stopPropagation();
+    }
+}
+
+
+//5.7. Отмена действия(отмена вызова событий)!
+/*
+    <form id="testForm">
+        Login <input type="text"> <br />
+        <input type="reset"> <!-- очищает форму, инициирует событие reset -->
+    </form>
+*/
+document.querySelector("#testForm").addEventListener("reset", function (event) {
+    alert("Обработчик события reset");
+    let reslt = confirm("Очистить форму?");
+    if(!reslt) {
+        // preventDefault - Отмена действия по умолчанию
+        // для события reset действие по умолчанию - очистка содержимого формы
+        event.preventDefault(); // отмена действия
+        event.stopPropagation(); // отмена распространения
+    }
+});
+
+
+//5.7. Еще пример(возможность вводить только цифры в поле)!
+/*	HTML
+    <form id="testForm">
+        Login <input id="txt" type="text"> <br />
+        <input type="reset">
+    </form>
+*/
+
+let txt = document.querySelector("#txt");
+//Отслеживаем ввод данных с клавиатуры
+txt.addEventListener("keydown",function(e){
+    let allow = "0123456789";
+//если не цифра!
+    if(allow.search(e.key) == -1){
+        e.preventDefault();
+    }
+})
+
+//5.8. Делегирование событий! (события на вложение элементы объекта)
+/*	CSS
+    #wrapper {
+        border: 1px solid black;
+    }
+
+    p {
+        border: 1px solid black;
+        margin: 20px;
+
+        width: 100px;
+        padding: 5px;
+    }
+*/
+
+/*	HTML
+    <div id="wrapper">
+        <p>TEXT</p>
+        <p>TEXT</p>
+        <p>TEXT</p>
+        <p>TEXT</p>
+        <p>TEXT</p>
+    </div>
+*/
+
+let wrapper = document.querySelector("#wrapper");
+//Свойство target - указивает на элемент "<p> или <div>", который инициировал(запустил) событие!
+wrapper.onclick = function(e){
+    e.target.style.backgroundColor = "red";
+}
+
+wrapper.onclick = function(e){
+    if(e.target.localName == "p"){  //Только для тегов "<p>""
+        e.target.style.backgroundColor = "red";
+    }
+}
+
+
+//5.9. Пример "Находим метод с именем, как в атрибуте data-action и вызываем его"
+/* HTML
+    <ul id="menu">
+        <li data-action="new">Новый файл</li>
+        <li data-action="save">Сохранить</li>
+        <li data-action="delete">Удалить</li>
+        <li data-action="exit">Выход</li>
+        <li data-action="test">test</li>
+    </ul>
+*/
+let fileManager = {
+    new() {
+        alert("Создание нового файла");
+    },
+    save() {
+        alert("Сохранение файла");
+    },
+    delete() {
+        alert("Удаление файла");
+    },
+    exit() {
+        alert("Выход");
+    },
+    test() {
+        alert("test");
+    }
+};
+
+// Обработчик устанавливается на элемент #menu и позволяет обработать все всплывающие от li события
+document.querySelector("#menu").addEventListener("click", function (e) {
+    const action = e.target.dataset.action;
+    if (action) {
+        // находим метод с именем, как в атрибуте data-action и вызываем его
+        fileManager[action]();
+    }
+});
