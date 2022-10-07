@@ -23,7 +23,13 @@
 		 Примеры популярных шаблонизаторов - handlebars.js, mustache.js, doT, pug.
 	3.1	 Пример использования mustache.js №1 (примери в ввидео уроке!)
 
-	
+	4. Классы, наследования
+	4.1. Наследования через прототипи!
+	4.2. Создание простого наслежования классов!
+	4.3. Наслежования классов з конструктором и методов super()!
+	4.4. Super-method, super()
+	4.5. Определения статических полей и методов.
+	4.6.Сортировать объекты по параметру с помощью метода .sort()
 */
 
 
@@ -631,3 +637,317 @@ console.log(u.getName());
             document.getElementById("target").innerHTML = rendered;
         }
     //</script>
+
+
+
+
+
+/*______4. Классы, наследования_____________________________________*/
+/*
+	Наследование – концепция объектно-ориентированных языков программирования, согласно которой один тип данных (класс), 
+	может наследовать данные и функциональность другого типа данных (класса).
+
+	Наследование способствует повторному использованию существующего кода.
+
+	Прототипное наследование – механизм наследования, поддерживаемый в JavaScript, 
+	который базируется на построении цепочки прототипов и совместном использовании функций между объектами.
+	
+	Ключевые слова class и extends являются синтаксическим сахаром прототипно-ориентированной модели наследования.
+*/
+
+// ______4.1 Наследования через прототипи!____________________________________!!!!!
+//Пример использование наследования через прототипи, описана в уроке "4. JavaScript Базовый - Lesson 8 - Inheritance".
+
+
+
+
+
+// ______4.2. Создание простого наслежования классов!____________________________________!!!!!
+// Базовый класс Animal
+class Animal {
+    sleep() {
+        console.log("Животное спит.");
+    }
+
+    eat() {
+        console.log("Животное ест.");
+    }
+}
+
+// Производный класс Dog.
+// Класс Dog расширяет класс Animal.
+// Класс Dog наследуется от класса Animal, это означает, что методы и свойства класса Animal будут доступны в классе
+// Dog, при этом дочерний класс Dog может заместить работу методов, которые получены по наследству, а также добавить свои методы.
+class Dog extends Animal {
+    eat() {
+        console.log("Собака ест мясо.");
+    }
+}
+
+// Класс Cow расширяет класс Animal
+class Cow extends Animal {
+    eat() {
+        console.log("Корова ест траву.");
+    }
+}
+
+let a1 = new Dog();
+let a2 = new Cow();
+
+a1.eat();       //Собака ест мясо.
+a1.sleep();     //Животное спит.
+
+console.log("-------");
+
+a2.eat();       //Корова ест траву.
+a2.sleep();     //Животное спит.
+
+console.log("-------");
+
+let animals = [new Dog(), new Cow()];
+
+animals.forEach(animal => {     //Собака ест мясо.
+    animal.eat();               //Животное спит.
+    animal.sleep();             //Корова ест траву.
+});                             //Животное спит.
+
+
+// ______4.3. Наслежования классов з конструктором и методов super()____________________________________!!!!!
+class BaseClass {
+    method1() {
+        console.log("Method from BaseClass");
+    }
+}
+
+class DerivedClass extends BaseClass {
+    constructor(value) {
+        super(); // конструктор производного класса должен всегда вызывать конструктор базового класса
+        this.derivedClassProperty = value;
+    }
+
+    method2() {
+        console.log("Method from DerivedClass " + this.derivedClassProperty);
+    }
+}
+
+let obj1 = new BaseClass();
+// Когда запускается конструктор производного класса, пустой объект не устанавливается в качестве контекста -
+// эту задачу выполняет конструктор базового класса. Для того, чтобы контекст в производном классе указывал на новый создаваемый
+// объект, необходимо вызвать конструктор базового класса через super().
+let obj2 = new DerivedClass(10);
+
+obj1.method1(); //Method from BaseClass
+
+obj2.method1(); //Method from BaseClass
+obj2.method2(); //Method from DerivedClass 10
+
+
+//_Пример______________________________________________________________________
+class BaseClass {
+    constructor(name){
+        this.name = name;
+        console.log("Hello from base");
+    }
+    method1() {
+        console.log("Method from BaseClass");
+    }
+}
+
+class DerivedClass extends BaseClass {
+    constructor(value, name) {
+        super(name); // конструктор производного класса должен всегда вызывать конструктор базового класса
+        this.derivedClassProperty = value;
+    }
+
+    method2() {
+        console.log("Method from DerivedClass " + this.derivedClassProperty);
+    }
+}
+
+let obj1 = new BaseClass("Base Name");
+console.log(obj1.name);	//Base Name
+console.log(`--------------------`);
+let obj2 = new DerivedClass(10, "DeriveName");
+console.log(obj2.name);	//DeriveName
+
+
+
+//_Пример______________________________________________________________________
+class Animal {
+    // Конструктор базового класса
+    constructor(name) {
+        this.name = name;
+    }
+
+    sleep() {
+        console.log(this.name + " спит.");
+    }
+
+    eat() {
+        console.log(this.name + " ест.");
+    }
+}
+
+class Dog extends Animal {
+    // Если производный класс содержит конструктор, то перед тем, как в нем произведется первое обращение к контексту (this)
+    // и до завершения тела конструктора должен быть вызван конструктор базового класса через ключевое слово super().
+    // При этом, свойства для производного класса, полученные по наследству, будут содержать значения, инициализированные конструктором
+    // родительского класса, вызванного через super.
+    // Если в классе нет конструктора, то автоматически создается такой пустой конструктор.
+    // Конструктор, который все полученные параметры передаст конструктору базового класса.
+    
+    // constructor(...args) {
+    //     super(...args);
+    // }
+
+    eat() {
+        console.log(`Собака ${this.name} ест мясо.`);
+    }
+}
+
+class Cow extends Animal {
+    eat() {
+        console.log(`Корова ${this.name} ест траву.`);
+    }
+}
+
+let a1 = new Dog("Шарик");
+let a2 = new Cow("Буренка");
+
+a1.eat();
+a1.sleep();
+
+console.log("-------");
+
+a2.eat();
+a2.sleep();
+
+console.log("-------");
+
+let animals = [new Dog("Шарик"), new Cow("Буренка")];
+
+animals.forEach(animal => {
+    animal.eat();
+    animal.sleep();
+});
+
+
+
+
+// ______4.4. Super-method, super()____________________________________!!!!!
+    class BaseClass {
+        exemp() {
+            console.log("BaseClass.Method");
+        }
+    }
+
+    class DerivedClass extends BaseClass {
+        exemp() {
+            super.exemp(); // обращение к методу method из родительского класса, по сути обращение к прототипу функции конструктора BaseClass
+            console.log("DerivedClass.Method");
+        }
+    }
+
+    let instance1 = new BaseClass();
+    let instance2 = new DerivedClass();
+
+    console.log("instance1");
+    instance1.exemp();
+    //BaseClass.Method
+
+    console.log("instance2");
+    instance2.exemp();
+    //BaseClass.Method
+    //DerivedClass.Method
+
+
+// ______4.5. Определения статических полей и методов.____________________________________!!!!!
+/*
+	static – ключевое слово для определения статических полей и методов. Статический член класса существует в одном экземпляре для всего приложения.
+	Статические свойство или метод создаются в функции конструкторе, а не в каждом экземпляре.
+	Для получения доступа к статическим членам, необходимо выполнять обращение через имя класса, а не через конкретный экземпляр.
+*/
+class MyClass {
+    property1;           // свойство принадлежит экземпляру класса - у каждого экземпляра уникальное значение
+    static property2;    // статическое свойство принадлежит классу (функции конструктору) - одно значение на все экземпляры
+}
+
+let m1 = new MyClass();
+let m2 = new MyClass();
+
+m1.property1 = 10;
+m2.property1 = 20;
+
+MyClass.property2 = 100; // получить доступ к статическому свойству можно через класс
+
+console.log(m1.property1);      //10
+console.log(m2.property1);      //20
+console.log(MyClass.property2); //100
+console.log(m2.property2);      //undefined
+
+//____Еще пример___________________________________________!
+class MyClass {
+    property1;
+    //static property1 = 45
+
+    constructor(value) {
+        this.property1 = value;
+    }
+
+    // метод находится в прототипе и доступен на каждом экземпляре
+    method1() {
+        console.log("Не статический метод " + this.property1);
+    }
+
+    // статический метод, находится в классе (принадлежит функции конструктору)
+    static method2() {
+        console.log("Статический метод " + this.property1); // в статическом методе this указывает на функцию конструктор
+    }
+}
+
+let m1 = new MyClass(10);
+let m2 = new MyClass(20);
+
+m1.method1();       //Не статический метод 10
+m2.method1();       //Не статический метод 20
+
+MyClass.method2();  //Не статический метод undefined
+
+
+
+
+//______4.6.Сортировать объекты по параметру с помощью метода .sort()____________________________________!!!!!
+class User {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    log() {
+        console.log(this.name + " " + this.age);
+    }
+
+    static compare(user1, user2) {
+        return user1.age - user2.age;
+    }
+}
+
+let array = [
+    new User("Ivan", 29),
+    new User("Igor", 25),
+    new User("Elena", 32),
+    new User("Petr", 41),
+    new User("Anna", 24),
+    new User("Irina", 26),
+];
+
+// метод массива sort может принимать в качестве параметра функцию, определяющую критерии оценивания, какой объект считать большим, а какой меньшим
+// функция принимает два параметра и должна возвращать числовое значение
+// если числовое значение меньше 0 - это означает, что первый объект меньше, чем второй
+// если значение больше чем 0 - первый объект больше чем второй
+// если значение 0 - объекты равны
+
+array.sort(User.compare);
+
+array.forEach(user => user.log());
+//Anna 24, Igor 25, Irina 26, Ivan 29, Elena 32, Petr 41
