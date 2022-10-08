@@ -30,13 +30,13 @@
 	4.4. Super-method, super()
 	4.5. Определения статических полей и методов.
 	4.6.Сортировать объекты по параметру с помощью метода .sort()
+
+
+	5. Контекст функции
+	5.1. Простой пример использование 'this'
+	5.2. Простой пример использование apply(), call(), bind()
+	5.3. Более подробный пример использование apply(), call(), bind() и их разница
 */
-
-
-
-
-
-
 
 
 
@@ -951,3 +951,133 @@ array.sort(User.compare);
 
 array.forEach(user => user.log());
 //Anna 24, Igor 25, Irina 26, Ivan 29, Elena 32, Petr 41
+
+
+
+
+//______5.Контекст функции____________________________________!!!!!
+/*
+	this – ключевое слово, определяющее контекст выполнения кода. Указывает на объект, которому принадлежит выполняемый метод.
+
+	Расположение функции 				Значение 
+	Метод объекта 						Объект 
+	Глобальная функция 					Глобальный объект (window) 
+	Глобальная функция (строгий режим) 	undefined 
+	Конструктор 						Новый создаваемый объект 
+	Обработчик события 					Элемент выдавший событие 
+	В цепочке прототипов 				Объект на котором был вызван метод 
+	getter/setter 						Объект
+
+
+	При вызове функции через методы call и apply, можно указать контекст вызова.
+	С помощью метода bind можно создать новую функцию с привязанным контекстом.
+*/
+
+
+// функция определена в глобальной области видимости
+function test() {
+    console.log(this); // this указывает на Window
+}
+
+test();
+
+
+//Если использовать "use strict";
+"use strict";
+
+function test() {
+    console.log(this); // в строгом режиме функция не указывает на глобальный контекст, вместо этого контекст - undefined
+}
+
+test();
+
+
+
+
+//______5.1. Простой пример использование 'this'____________________________________!!!!!
+"use strict";
+
+function User(login, email) {
+    console.log(this);      //Ссылается на свой же объект
+}
+
+class Client {
+    constructor(firstName, lastName) {
+        console.log(this);  //Ссылается на свой же объект
+    }
+}
+
+let u1 = new User();
+let c1 = new Client();
+
+let u2 = User(); // без new контекст конструктора - глобальный объект или undefined в strict mode
+let c2 = Client(); // экземпляр класса нельзя создать без ключевого слова new
+
+
+
+//______5.2. Простой пример использование apply(), call(), bind()____________________________________!!!!!
+let obj1 = {
+    prop1 : "Test",
+    prop2 : 123
+};
+
+let obj2 = {
+    prop1 : "Hello",
+    prop2 : "world"
+};
+
+function show() {
+    console.log(this.prop1);
+    console.log(this.prop2);
+}
+
+show(); // контекст функции - глобальный объект
+
+// apply и call методы для запуска выбранной функции с применением указанного контекста
+show.apply(obj1);   // Визов метода(функции) show в контексте обьекта - obj1
+show.call(obj2);    // контекст вызываемой функции - obj2
+
+let newFunction = show.bind(obj1); // создаем новую функцию и привязываем к ней в качестве контекста obj1
+newFunction();
+
+
+
+
+//______5.3. Более подробный пример использование apply(), call(), bind() и их разница!____________________________________!!!!!
+/*	HTML
+    <div id="elem1"></div>
+    <div id="elem2"></div>
+    <div id="elem3"></div>
+*/
+let obj1 = {
+    prop1: "Hello",
+    prop2: "world"
+};
+
+function show(elementSelector, color) {
+    let element = document.querySelector(elementSelector);
+    element.style.color = color;
+    element.innerHTML += this.prop1 + " ";
+    element.innerHTML += this.prop2;
+}
+
+show.apply(obj1, ["#elem1", "red"]); // параметры передаются массивом
+show.call(obj1, "#elem2", "green"); // параметры передаются по отдельности
+
+let f = show.bind(obj1, "#elem3", "blue"); // параметры могут быть привязаны к создаваемой функции вместе с контекстом
+f();
+
+// или
+// let f = show.bind(obj1);
+// f("#elem1", "blue");
+
+
+function Mul(x,y){
+    console.log(x*y);
+}
+
+let Mul2 = Mul.bind(null,2)
+Mul2(2);    //4
+Mul2(3);    //6
+Mul2(4);    //8
+Mul2(5);    //10
