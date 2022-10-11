@@ -9,6 +9,7 @@
 	2.5. 2.5. Пример ошибки в setInterval, более детально рассказано в уроке! '9. Контекст функции'
 
 	3.0. Три примера написания своего таймера рассказано в уроке! '9. Контекст функции'
+	3.1. Пример таймера! №1 .bind(this) = прив'язка до текущего елемента
 */
 
 
@@ -126,6 +127,7 @@ document.querySelector("button").onclick = function(){
 
 
 //_____2.4. Пример "spot setTimeout()"_____
+//Через 5с. перейти на http://google.com
 /*	HTML
     <button>STOP</button>
 */
@@ -144,13 +146,106 @@ document.querySelector("button").onclick = function(){
 
 
 //_____2.5. Пример ошибки в setInterval, более детально рассказано в уроке! '9. Контекст функции'_____
+//Обратить внимание на ошибку!
 let obj = {
     a: 10,
     calc:function(){
         console.log(this.a + 1);
     }
 }
-
 obj.calc(); //11
 
 setInterval(obj.calc, 1000); //Nan, Nan, Nan ...
+
+
+
+
+//3.0. Три примера написания своего таймера рассказано в уроке! '9. Контекст функции'
+/*
+    <div id="output">0</div>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <button id="resetBtn">Reset</button>
+*/
+//Простой пример таймера
+let value = 0;
+let timerId;
+
+function tick() {
+    value++;
+    document.querySelector("#output").textContent = value;
+}
+
+function resetValue() {
+    value = 0;
+}
+
+document.querySelector("#startBtn").addEventListener("click", function () {
+    if (!timerId) {
+        timerId = setInterval(tick, 1000);
+    }
+});
+
+document.querySelector("#stopBtn").addEventListener("click", function () {
+    if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+    }
+});
+
+document.querySelector("#resetBtn").addEventListener("click", function () {
+    resetValue();
+});
+
+
+
+//3.1. Пример таймера! №1 .bind(this) = прив'язка до текущего елемента
+class Timer {
+    constructor(selector, interval) {
+        this.element = document.querySelector(selector);
+        this.interval = interval;
+        this.value = 0;
+        this.timerId = null;
+    }
+
+    start() {
+        if (!this.timerId)
+            // this.tick.bind(this) - создаем новую функцию и привязываем к ней контекст, который в методе start указывает на текущий экземпляр класса Timer
+            this.timerId = setInterval(this.tick.bind(this), this.interval);
+    }
+
+    stop() {
+        if (this.timerId) {
+            clearInterval(this.timerId);
+            this.timerId = null
+        }
+    }
+
+    tick() {
+        console.log(this);
+        this.value++;
+        this.showValue();
+    }
+
+    reset() {
+        this.value = 0;
+    }
+
+    showValue() {
+        this.element.textContent = this.value;
+    }
+}
+
+let timer = new Timer("#timerOutput", 1000);
+
+document.querySelector("#startBtn").addEventListener("click", function () {
+    timer.start();
+});
+
+document.querySelector("#stopBtn").addEventListener("click", function () {
+    timer.stop();
+});
+
+document.querySelector("#resetBtn").addEventListener("click", function () {
+    timer.reset();
+});

@@ -36,6 +36,7 @@
 	5.1. Простой пример использование 'this'
 	5.2. Простой пример использование apply(), call(), bind()
 	5.3. Более подробный пример использование apply(), call(), bind() и их разница
+    5.4. Примеры использования this из простой() и стрелочной функцией () => {}и стрелочной функцией
 */
 
 
@@ -1081,3 +1082,69 @@ Mul2(2);    //4
 Mul2(3);    //6
 Mul2(4);    //8
 Mul2(5);    //10
+
+
+
+
+//5.4. Примеры использования this из простой() и стрелочной функцией () => {}и стрелочной функцией
+function exemp(){
+    console.log(this);
+}
+exemp(); //обьект window
+
+let exemp2 = () => {
+    console.log(this);
+}
+exemp2(); //обьект window
+
+obj1 = {
+    a:10,
+    exemp:function(){
+        console.log(this);      //Object
+        console.log(this.a)     //10
+    }
+}
+obj1.exemp();
+
+obj2 = {
+    a:20,
+    exemp:() =>{
+        console.log(this);      //Window
+        console.log(this.a);    //undefined
+    }
+}
+obj2.exemp();
+
+obj3 = {
+    a:20,
+    exemp:function(){
+        let f = ()=>{
+            console.log(this);      //Object
+            console.log(this.a);    //20
+        }
+        f();
+    }
+}
+obj3.exemp();
+
+obj4 = {
+    arr:[11,22,33,44,55,66],
+    num:10,
+    show:function(){
+        this.arr.forEach(function(elem){
+            console.log(elem*this.num);
+        });
+    }
+}
+obj4.show();//NaN, NaN, NaN ...
+
+obj5 = {
+    arr:[11,22,33,44,55,66],
+    num:10,
+    show:function(){
+        this.arr.forEach((elem)=>{
+            console.log(elem*this.num);
+        });
+    }
+}
+obj5.show();//110,220,330,440,550,660...
