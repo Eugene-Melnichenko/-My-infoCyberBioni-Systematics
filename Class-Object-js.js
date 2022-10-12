@@ -37,7 +37,34 @@
 	5.2. Простой пример использование apply(), call(), bind()
 	5.3. Более подробный пример использование apply(), call(), bind() и их разница
     5.4. Примеры использования this из простой() и стрелочной функцией () => {}и стрелочной функцией
+
+    6. Область видимости!
+    6.1. Пример 1.
+    6.2. Пример 2.
+
+    7. Замыкания!
+    7.1. Простой пример №1.
+    7.2. Простой пример №2.
+    7.3. Простой пример №3.
+    7.4. Простой пример №4.
+    7.5. Пример №5 "немедленно вызываемая функция". 
+
+    8. Тег <template> - не отображается на странице!
+    (Пример использование описан в уроке "4. JavaScript Базовый - Lesson 10 - Closures")
+    8.1. Простой пример №1.
+    8.2. Простой пример №2.
 */
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1148,3 +1175,236 @@ obj5 = {
     }
 }
 obj5.show();//110,220,330,440,550,660...
+
+
+
+
+
+//______6.Область видимости!____________________________________!!!!!
+//6.1. Пример 1.
+var exampleName1 = "Test1"; // Переменная, созданная через var становится глобальной переменной
+let exampleName2 = "Test2"; // Переменная, созданная через let доступна только в данном сценарии
+
+// Функция в глобальной области видимости
+function testFunc() {
+    console.log("This is test function");
+}
+
+// Глобальные переменные и функции, являются свойствами глобального объекта
+// Для браузера глобальный объект - window
+
+//Test1
+console.log(window.exampleName1); // глобальная переменная exampleName1 доступна как свойство объекта window
+//undefined
+console.log(window.exampleName2); // переменная exampleName2, созданная через let, не глобальная и не доступна через свойство window
+//Test2
+console.log(exampleName2); 
+
+//This is test function
+window.testFunc(); // Функция testFunc глобальная и ее можно вызвать на глобальном объекте
+//This is test function
+testFunc(); 
+
+window.alert("test 1"); // Любую глобальную функцию можно вызвать на глобальном объекте
+alert("test 2");
+
+
+
+//6.2. Пример 2.
+//globalThis - стандартизированное имя глобального объекта
+var exampleName1 = "Test1"; // Переменная, созданная через var, становится глобальной переменной
+let exampleName2 = "Test2"; // Переменная, созданная через let, доступна только в данном сценарии
+
+// Функция в глобальной области видимости
+function testFunc() {
+    console.log("This is test function");
+}
+
+// Глобальные переменные и функции, являются свойствами глобального объекта
+// Для браузера глобальный объект - window
+
+//Test1
+console.log(globalThis.exampleName1); // глобальная переменная exampleName1 доступна как свойство объекта window
+//undefined
+console.log(globalThis.exampleName2); // переменная exampleName2, созданная через let, не глобальная и не доступна через свойство window
+//Test2
+console.log(exampleName2); 
+
+//This is test function
+globalThis.testFunc(); //Функция testFunc глобальная и ее можно вызвать на глобальном объекте
+//This is test function
+testFunc(); 
+
+globalThis.alert("test 1"); //Любую глобальную функцию можно вызвать на глобальном объекте
+alert("test 2");
+
+
+
+
+
+
+
+//______7.Замыкания!____________________________________!!!!!
+/*
+    Контекст выполнения (execution context) – 
+    механизм, описывающий окружение, в котором оценивается и выполняется JavaScript код. 
+    Любой JavaScript код работает внутри определенного контекста выполнения.
+*/
+/*
+    Стек выполнения (execution stack) – 
+    сохраняет все контексты выполнения, которые были созданы в процессе работы кода.
+*/
+
+/*
+    Типы контекстов выполнения: 
+    - Global Execution Context – создается один раз при запуске сценария. 
+    - Functional Execution Context – создается при каждом запуске функции. 
+    - Eval Function Execution Context – код, выполняемый через eval.
+*/
+
+
+//7.1. Простой пример №1.
+    // 1. Создается глобальный контекст выполнения
+    function f1() {
+        console.log("f1");
+    }
+
+    function f2() {
+        // 3. Создается контекст выполнения для f1, который помещается поверх контекста для функции f2
+        f1();
+    }
+
+    // 2. Создается контекст выполнения для f2, который помещается поверх глобального контекста выполнения 
+    f2();
+    // При завершении работы функции, контекст выполнения этой функции удаляется из стека.
+    // Для каждого контекста выполнения создается лексическое окружение (LexicalEnvironment), которое используется
+    // для разрешения идентификаторов.
+
+
+//7.2. Простой пример №2.
+function calculate(x) { // x находится в лексическом окружении создаваемом при вызове calculate
+
+    // вложенная функция
+    function increment() {
+        return x + 1; // переменная x будет взята из лексического окружения внешней функции
+    }
+
+    console.log(increment());
+}
+
+calculate(1);   //2
+calculate(10);  //11
+
+
+
+//7.3. Простой пример №3.
+// Замыкание (Closure) - это функция и лексическое окружение, в котором эта функция была создана.
+function makeCounter() {
+    let counter = 0;
+
+    function increment() { // функция определена в лексическом окружении, которое было создано при запуске функции makeCounter
+        return counter += 1;
+    }
+
+    return increment; // функция содержит ссылку на лексическое окружение, в котором она была создана
+}
+
+let counter1 = makeCounter(); // возвращает замыкание 
+let counter2 = makeCounter(); // возвращает замыкание 
+
+// так как при каждом вызове makeCounter создается новое лексическое окружение
+// замыкания, сохраненные в переменных counter1 и counter2, будут работать с двумя 
+// независимыми переменными counter, расположенными в разных лексических окружениях
+
+console.log("counter1");
+
+console.log(counter1());    //1
+console.log(counter1());    //2
+console.log(counter1());    //3
+console.log(counter1());    //4
+
+console.log("counter2");
+
+console.log(counter2());    //1
+console.log(counter2());    //2
+console.log(counter2());    //3
+console.log(counter2());    //4
+
+
+//7.4. Простой пример №4.
+function makeSizer(size) {
+    return function () {
+        document.body.style.fontSize = size + 'px';
+    };
+}
+
+// замыкания с различными значениями переменной size
+let size16 = makeSizer(16);
+let size24 = makeSizer(24);
+let size43 = makeSizer(43);
+
+document.querySelector("#size-16").onclick = size16;
+document.querySelector("#size-24").onclick = size24;
+document.querySelector("#size-43").onclick = size43;
+
+
+//7.5. Пример №5 "немедленно вызываемая функция". 
+// IIFE (immidiatly invoked function expression), функция, запускаемая сразу после объявления
+// Прием, который позволяет определить блок кода, в котором созданные идентификаторы будут локальными,
+// а не глобальными, так как создавая переменную в функции она находится в лексическом окружении данной функции.
+// IIFE широко использовались в предыдущих версиях JavaScript до введения модулей и let и позволяли
+// легко контролировать количество создаваемых глобальных переменных.
+
+// немедленно вызываемая функция. Вариант 1.
+(function () {
+    let name = "Eugene";
+    alert(`Hello ${name}.`);
+}());
+
+// немедленно вызываемая функция. Вариант 2.
+(function () {
+    let name = "Alina";
+    alert(`Hello ${name}`);
+})();
+
+alert(`Hello ${name}`); //error;
+
+
+
+//______8. Тег <template> - не отображается на странице!____________________________________!!!!!
+//8.1. Простой пример №1.
+/*HTML
+    <template>
+        <p>Hello world from template</p>
+    </template>
+*/
+// получение шаблона
+var template = document.querySelector("template");
+// клонирование шаблона, true - глубокое клонирование всего содержимого шаблона
+var templateClone = template.content.cloneNode(true);
+// добавление содержимого шаблона в DOM дерево
+document.body.appendChild(templateClone);
+
+
+//8.2. Простой пример №2.
+/*HTML
+    <template>
+        <p>Hello world from template</p>
+
+        <!--Скрипт не выполнится до тех пор, пока шаблон не станет частью DOM дерева-->
+        <script>
+            alert("hi");
+        </script>
+
+        <!--Изображение не будет отображаться до тех пор, пока шаблон не будет скопирован в DOM дерево-->
+        <img src="https://via.placeholder.com/500" />
+    </template>
+
+    <button id="btn">Вставить контент шаблона</button>
+*/
+document.querySelector("#btn").addEventListener("click", function () {
+    var template = document.querySelector("template");
+    var templateClone = template.content.cloneNode(true);
+    // Сценарий и изображение из шаблона начнут работать только после клонирования шаблона в DOM дерево
+    document.body.appendChild(templateClone);
+});
