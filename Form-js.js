@@ -6,7 +6,19 @@
     1.4. Робота з датоюю в форме!
     1.5. Робота з 'radio' и 'checkbox' в форме!
     1.6. Робота з випадающим списком в форме!
-    1.7. Более подробные примеры использования формы описаны в уроке "4. JavaScript Базовый - Lesson 11 - Forms and Controls")
+    1.7. Более подробные примеры использования формы описаны в уроке "4. JavaScript Базовый - Lesson 11 - Forms and Controls")!
+
+
+    2. Проверка данных формы(валидация)!
+    2.1. Простой пример, проверка поля на пустоту!
+    2.2. Фокус, потери фокуса!
+    2.3. Autofocus!
+    2.4. Постоянный фокус, пока не прошла валидация!
+    2.5. Примеры использования событий в форме 'input', 'change', 'cut', 'copy'
+    2.6. Валидация, проверка полей через HTML описанА в уроке "4. JavaScript Базовый -  Lesson 12 - Form Validation"
+
+    3. Регулярное выражения!
+
 
 // ______1. Формы и элементы управления!____________________________________!!!!!
 /*
@@ -229,3 +241,206 @@ document.querySelector("#selectButton").addEventListener("click", function () {
 
 
 //1.7. Более подробные примеры использования формы описаны в уроке "4. JavaScript Базовый - Lesson 11 - Forms and Controls")
+
+
+
+
+// ______2. Проверка данных формы(валидация)!____________________________________!!!!!
+/*
+    Проверка данных формы или валидация - это процесс, при котором выясняется, 
+    подходят ли полученные данные для приложения, и если это не так, 
+    пользователь получает информацию для устранения ошибок.
+*/
+
+//2.1. Простой пример, проверка поля на пустоту!
+/* HTML
+    <form action="https://itvdn.com/ru/catalog" method="GET">
+        <div class="form-group">
+            <label>Запрос</label>
+            <input type="text" name="search">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Поиск">
+        </div>
+    </form>
+*/
+const form = document.forms[0];
+// submit - событие происходит при нажатии на кнопку submit и отправке данных формы на сервер.
+form.addEventListener("submit", function (event) { 
+    alert("Событие submit");
+
+    // если поле ввода пустое - не отправляем форму
+    if(form.search.value.length == 0) {
+        event.preventDefault(); // отмена отправки формы
+    }
+});
+
+
+//2.2. Фокус, потери фокуса.
+/* HTML
+<form>
+    <form action="https://itvdn.com/ru/catalog" method="GET">
+        <label>Запрос</label>
+        <input type="text" name="search">
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Поиск">
+    </div>
+</form>
+*/
+
+
+const form = document.forms[0];
+// focus - событие происходит, когда элемент получает фокус. Событие не всплывает. Например, при клике по элементу или при переходе
+// на элемент при помощи клавиши Tab. Событие указывает на то, что пользователь готовится к вводу данных.
+// Может использоваться для инициализации данных, необходимых во время ввода. 
+form.search.addEventListener("focus", function () { 
+    console.log("focus") 
+    this.style.outline = "2px solid green";
+});
+
+// blur - событие происходит в момент потери фокуса, когда выполняется клик за пределами элемента управления, 
+// или фокус получает другой элемент управления. Событие не всплывает. Событие указывает на то, что пользователь ввел данные.
+// Чаще всего используется для проверки введенных пользователем данных
+form.search.addEventListener("blur", function () { 
+    console.log("blur") 
+    this.style.outline = "none";
+});
+
+// Так как события focus и blur не поддерживают всплытие, есть дополнительные события focusin и focusout которые поддерживают
+// всплытие, но обработчики для этих событий могут быть добавлены только с помощью addEventListener
+
+
+
+//2.3. Autofocus!
+/* HTML
+    <form action="https://itvdn.com/ru/catalog" method="GET">
+        <div class="form-group">
+            <label>Запрос</label>
+            <input type="text" name="search" autofocus > <!-- autofocus - устанавливает фокус на элементе управления при загрузке страницы -->
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Поиск">
+        </div>
+    </form>
+*/
+//JavaScript        
+const form = document.forms[0];
+form.search.focus(); // установка фокуса через JavaScript
+setTimeout(function(){form.search.blue(), 3000}); //Убираем фокус через 3с.
+
+
+//2.4 Постоянный фокус, пока не прошла валидация!
+const form = document.forms[0];
+form.search1.focus(); // установка фокуса через JavaScript
+form.search1.addEventListener("blur", function(){
+    if(this.value.length == 0){
+        this.focus()
+    }
+})
+
+
+//2.5. Примеры использования событий в форме 'input', 'change', 'cut', 'copy'
+/* HTML  
+<form>
+    <div class="form-group">
+        <label>Поле 1 (input)</label>
+        <input type="text" name="field1">
+    </div>
+    <div class="form-group">
+        <label>Поле 2 (change)</label>
+        <input type="text" name="field2">
+    </div>
+
+    <div class="form-group">
+        <label>Поле 3 (cut)</label>
+        <input type="text" name="field3" value="lorem ipsum">
+    </div>
+    <div class="form-group">
+        <label>Поле 4 (copy)</label>
+        <input type="text" name="field4" value="lorem ipsum">
+    </div>
+    <div class="form-group">
+        <label>Поле 5 (paste)</label>
+        <input type="text" name="field5">
+    </div>
+</form>
+*/
+const form = document.forms[0];
+
+form.field1.addEventListener("input", function () {
+    console.log("Событие input - " + form.field1.value);
+});
+
+form.field2.addEventListener("change", function () {
+    console.log("Событие change - " + form.field2.value);
+});
+
+form.field3.addEventListener("cut", function (e) {
+    const selection = document.getSelection();
+    console.log(`Событие cut - ${form.field3.value} (in buffer ${selection})`);
+});
+
+form.field4.addEventListener("copy", function (e) {
+    //const selection = document.getSelection();
+    //console.log(`Событие copy - ${form.field4.value} (in buffer ${selection})`);
+
+    e.preventDefault();//отмена собития 'copy'
+    alert("Текст нельзя копировать!");
+});
+
+form.field5.addEventListener("paste", function (e) {
+    //console.log(`Событие paste - ${form.field5.value} (in buffer ${e.clipboardData.getData("text")})`);
+    e.preventDefault();
+    alert("В это поле текст нужно ввоить вручную!");
+});
+
+
+//2.6. Валидация, проверка полей через HTML описанА в уроке "4. JavaScript Базовый -  Lesson 12 - Form Validation"
+
+
+
+//3. Регулярное выражения!
+/*
+<form>
+    <div class="form-group">
+        <label>Номер авто</label>
+        <!-- 
+            pattern - атрибут используется для проверки введенного значения с помощью регулярного выражения
+            placeholder - текст для поля ввода, который исчезнет при вводе данных пользователем
+        -->
+        <input type="text" name="vehicleNumber" pattern="[а-яA-Я]{2}\d{4}[а-яА-Я]{2}" placeholder="AА0000АА" required>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Поиск">
+    </div>
+</form>
+*/
+
+/*
+    a - соответствует символу а
+    abc - соответствует символу a, далее b, далее c
+
+    \d - любая цифра
+    \D - любой символ, не являющийся цифрой
+    \w - любой символ латинского алфавита, цифры и символ нижнего подчеркивания
+    \W - все символы, кроме символов латинского алфавита, цифр и символ нижнего подчеркивания
+    [] - группа символов, указанных в скобках, например [abc] соответствует символу a или b или c
+    [a-z] - любой символ от а до z (в нижнем регистре)
+    [0-9] - любой символ от 0 до 9
+    [0-9a-zA-Z] - любой символ от 0 до 9 или любой символ латинского алфавита в нижнем или верхнем регистре
+    квантификаторы
+    * - 0 или более раз
+    + - 1 или более раз
+    ? - 1 или 0 раз
+    {n} - n раз
+    {n,m} - от n до m раз
+
+    \d+ - соответствует строке, состоящей из одного и более цифровых символов, например, 1, 22, 123, 7777 и т.д.
+    \d{2,4} - соответствует строке, состоящей из двух, трех или четырех цифровых символов, например, 10, 88, 123, 5671 и т.д.
+    [a-z]{3}\d{2} - три любых символа латинского алфавита и две любые цифры, например, abc12, rgb43
+    abc\d\d\d - символы abc и три цифры, например, abc111, abc123 и т.д.
+    https? - символы http и 1 или 0 символов s - http или https
+
+    Больше о регулярных выражениях в JavaScript https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Regular_Expressions
+*/
