@@ -15,9 +15,30 @@
     2.3. Autofocus!
     2.4. Постоянный фокус, пока не прошла валидация!
     2.5. Примеры использования событий в форме 'input', 'change', 'cut', 'copy'
-    2.6. Валидация, проверка полей через HTML описанА в уроке "4. JavaScript Базовый -  Lesson 12 - Form Validation"
+    2.6. Валидация, проверка полей через HTML описано в уроке "4. JavaScript Базовый -  Lesson 12 - Form Validation"
 
     3. Регулярное выражения!
+
+    4. Cookeis.
+    4.1. Простой пример, создания cookie!
+    4.2. cookie-parameters!
+    4.3. encodeURIComponent - метод для кодирования строки в компонент, который будет использоваться в URI
+    4.4. set, get, delete Cookeis
+
+
+    5. Web Storage!
+    5.1. localStorage - объект, позволяющий хранить информацию в памяти браузера.
+    5.2. Вывод всех ключ значения из localStorage
+    5.3. Удаления из localStorage!
+    5.4. Робота из 'sessionStorage', практически та же что и с 'localStorage',
+         Урок "4. JavaScript Базовый -  Lesson 13 - Cookeis and Web Storage.
+
+    6. JSON - JavaScript Object Notation (Сохранения js кода в виде строки)!
+    6.1. Простой пример JSON
+
+    7. Событие storage возникает в момент обновления localStorage
+    описано в уроке "4. JavaScript Базовый -  Lesson 13 - Cookeis and Web Storage"
+
 
 
 // ______1. Формы и элементы управления!____________________________________!!!!!
@@ -444,3 +465,362 @@ form.field5.addEventListener("paste", function (e) {
 
     Больше о регулярных выражениях в JavaScript https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Regular_Expressions
 */
+
+
+// ______4. Cookeis!____________________________________!!!!!
+/*
+    Cookies - небольшой фрагмент данных, который сохраняется в браузере.
+    Веб браузер отправляет эти данные каждый раз, когда выполняет запрос на сайт, с которого был получен cookie.
+    Ограничение по объему данных – 4Кб.
+
+    Чаще всего используются для: 
+    - Управление состояния 
+    - Персонализации 
+    - Отслеживания действий
+
+
+    Атрибут  - Описание 
+    path     - указывает страницы, на которых будет работать данный cookie Например, ‘/’, ‘/home’, ‘/admin/user’
+    max-age  - Время жизни в секундах 
+    expires  - Дата, когда cookie должен быть удален., Например, 20 May 2022 05:15:05 GMT. 
+    samesite - Настройка необходима для защиты от уязвимости CSRF. Не поддерживается старыми браузерами (до 2017 года). 
+               Возможные значения strict, lax или none. 
+    secure   - Сookie будет отправляться на сервер только по HTTPS. 
+    httpOnly - Сookie используются только для HTTР запросов. Получить доступ через JS невозможно.
+*/
+
+//4.1. Простой пример, создания cookie!
+document.cookie = "hello=world"; // добавление куки c именем hello и значением world
+document.cookie = "test=123"; // добавление куки c именем test и значением 123
+console.log(document.cookie); // чтение всех куки, относящихся к данному домену
+//hello=world; test=123
+
+console.log(typeof document.cookie) //string
+
+
+document.cookie = "test=000"; // изменение значения куки с именем test
+console.log(document.cookie);
+//hello=world; test=000
+
+// Chrome игнорирует установку куки из локальных файлов, но данный код будет работать корректно, когда 
+// будет опубликован на сервер.
+// На момент написания этих примеров, локально, работу данного кода можно проверить в других браузерах, которые
+// не используют движок Chromium, например, Firefox.
+
+
+
+//4.2. cookie-parameters!
+let year = 365*24*60*60;
+//document.cookie = "color=green; max-age=30; path=/;";
+document.cookie = "color=green; max-age=30"+year+"; path=/;"; 
+
+let expiresDate = new Date("05-20-2023");
+document.cookie = "color=green; max-age=30"+expiresDate.toUTCString+"; path=/;"; 
+
+// path - указывает страницы, на которых будет работать данный куки
+// /catalog на страницах /catalog/folder и т.д. но на странице /home работать не будет
+// / - для всех страниц
+
+// max-age - время жизни, значения в секундах
+// expires - дата, когда значение должно быть удалено, пример - значения 20 May 2022 05:15:05 GMT
+
+// samesite - значения strict, lax или none. Настройка необходима для защиты от уязвимости CSRF
+// не поддерживается старыми браузерами (до 2017 года)
+// CSRF - https://ru.wikipedia.org/wiki/Межсайтовая_подделка_запроса
+// Документация по samesite https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+
+// secure - куки можно отправлять только по HTTPS
+// httpOnly - куки используются только для HTTP запросов и не могут быть получены с помощью JS кода
+
+document.querySelector("button").addEventListener("click", function() {
+    alert(document.cookie);
+});
+
+
+
+//4.3. encodeURIComponent - метод для кодирования строки в компонент, который будет использоваться в URI
+// encodeURIComponent - метод для кодирования строки в компонент, который будет использоваться в URI
+// Этот метод заменяет все символы, кроме символов латинского алфавита, цифр и символов _ . ! ~ * ' ( )
+// Метод используется для предотвращения некорректных запросов, например,
+// строка без использования URI кодировки - https://itvdn.com/search?term=position=absolute
+// строка с использованием URI кодировки - https://itvdn.com/search?term=position%3Dabsolute
+// Во второй строке символ = был заменен на %3D
+
+// Cookie значение является строкой. Для гарантирования правильного форматирования используйте
+// метод encodeURIComponent при записи значений и decodeURIComponent при чтении
+
+// кодирование
+console.log("Hello world");                         //Hello world
+console.log(encodeURIComponent("Hello world"));     //Hello%20world
+
+console.log("Привет мир");                          //Привет мир
+console.log(encodeURIComponent("Привет мир"));      //%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%20%D0%BC%D0%B8%D1%80
+
+console.log("10=20;value=123?&;test=1;");                       //10=20;value=123?&;test=1;
+console.log(encodeURIComponent("10=20;value=123?&;test=1;"));   //10%3D20%3Bvalue%3D123%3F%26%3Btest%3D1%3B
+
+// декодирование
+console.log(decodeURIComponent("10%3D20%3Bvalue%3D123%3F%26%3Btest%3D1%3B")); //10=20;value=123?&;test=1;
+
+// пример записи значения в cookie
+document.cookie = "login="+encodeURIComponent("super user"); //login=super%20user; color=green
+alert(document.cookie);
+
+
+//4.4. set, get, delete Cookeis
+/* HTML
+    <button id="writeButton">Записать</button>
+    <button id="readButton">Прочитать</button>
+    <button id="deleteButton">Удалить</button>
+*/
+
+//Записать
+function setCookie(name, value) {
+    let encodedValue = encodeURIComponent(value);
+    document.cookie = `${name}=${encodedValue}`;
+}
+
+//Прочитать
+function getCookie(name) {
+    let cookie = document.cookie; // a=10; b=20; c=30
+    let pos = cookie.indexOf(name + "=");
+
+    // Если cookie с указанным именем найден, извлечь его значения.
+    if (pos != -1) {
+        let start = pos + name.length + 1;
+        let end = cookie.indexOf(";", start);
+
+        if (end == -1) {
+            end = cookie.length;
+        }
+
+        // substring - вырезать значения из строки по индексам указанным в параметрах
+        let value = cookie.substring(start, end);
+
+        return decodeURIComponent(value);
+    }
+}
+//Удалить
+function deleteCookie(name) {
+    document.cookie = `${name}=;max-age=0`; // для удаления cookie устанавливается max-age равный 0
+}
+
+
+
+let readBtn = document.querySelector("#readButton");        //Прочитать
+let writeBtn = document.querySelector("#writeButton");      //Записать
+let deleteBtn = document.querySelector("#deleteButton");    //Удалить
+
+
+
+//Записать
+writeBtn.addEventListener("click", function () {
+    setCookie("myCookie", "Тестовое значение = 123!");
+});
+
+//Прочитать
+readBtn.addEventListener("click", function () {
+    let value = getCookie("myCookie");
+    if (value)
+        alert(value);
+    else
+        alert("Значенеи не найдено");
+});
+//Удалить
+deleteBtn.addEventListener("click", function () {
+    deleteCookie("myCookie");
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ______5. Web Storage!____________________________________!!!!!
+/*
+    Web Storage API – предоставляет доступ к инструментам сохранения ключ/значение в памяти браузера. 
+    Есть два варианта хранилища – localStorage и sessionStorage. 
+    Лимит на хранение данных 5+ Мб (отличается в разных браузерах).
+
+    setItem(key, value) - сохраняет значение по ключу 
+    getItem(key)        - возвращает значение по ключу 
+    removeItem(key)     - удаляет запись по ключу 
+    clear()             - удаляет все записи для текущего источника 
+    key(index)          - возвращает имя ключа по указанному индексу 
+    length              - возвращает количество ключей в хранилище
+
+
+                          sessionStorage!                localStorage!
+    время жизни         - Пока открыта страница         Без ограничения 
+    область видимости   - Текущая страница              Все страницы источника
+*/
+
+//5.1. localStorage - объект, позволяющий хранить информацию в памяти браузера.
+/*  HTML
+    <form name="writeForm">
+        <div class="form-group">
+            <label>Ключ</label>
+            <input type="text" name="keyInput" required>
+        </div>
+        <div class="form-group">
+            <label>Значение</label>
+            <input type="text" name="valueInput" required>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Запись">
+        </div>
+    </form>
+
+    <br>
+
+    <form name="readForm">
+        <div class="form-group">
+            <label>Ключ</label>
+            <input type="text" name="keyInput" required>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Чтение">
+        </div>
+    </form>
+*/
+document.forms.writeForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = document.forms.writeForm;
+
+    let key = form.keyInput.value;
+    let value = form.valueInput.value;
+
+    //setItem(key, value) - сохраняет значение по ключу
+    
+    //1 способ записи!
+    localStorage.setItem(key, value); // сохранение значения по ключу
+
+    //2 способ записи! 
+    //localStorage.myKey = "exemp!!!"; //(key = myKey; value = exemp!!!)
+
+    //3 способ записи! 
+    //localStorage["strKey"] = 777; //(key = strKey; value = 777)
+
+
+
+    // localStorage - объект, позволяющий хранить информацию в памяти браузера.
+    // Хранение информации в localStorage не имеет ограничения по времени и может быть удалена
+    // с помощью JavaScript код.
+
+    // ключ и значение, которые записываются в localstorage, должны быть строковыми
+
+    // Источник - протокол, домен и порт
+    // например, https://itvdn.com - источник
+    
+    // http://example.com и http:/example.com:8080 разные источники так как отличаются значением порта
+    
+    // Для каждого источника создается свой экземпляр хранилища. В зависимости от браузера лимит на хранилище 5 Мб.
+
+    form.reset();
+});
+
+//// чтение значения по ключу, если ключ не найден, возвращается null
+document.forms.readForm.addEventListener("submit", function (e) {
+    e.preventDefault();//отмена отправки данных, отмена перезапуска
+
+    const form = document.forms.readForm;
+    let key = form.keyInput.value;
+
+    let value = localStorage.getItem(key); // чтение значения по ключу, если ключ не найден, возвращается null
+    alert(value);
+});
+
+
+
+//5.2. Вывод всех ключ значения из localStorage
+for (let i = 0; i < localStorage.length; i++) { // length - количество ключей в хранилище
+    let key = localStorage.key(i); // key(i) - получить имя ключа по заданной позиции
+    console.log(`${key} = ${localStorage.getItem(key)}`);
+}
+
+
+
+//5.3. Удаления из localStorage!
+/*
+    <div class="form-group">
+        <label>Ключ</label>
+        <input id="keyInput" type="text">
+    </div>
+    <div class="form-group">
+        <button id="deleteButton">Удалить</button> <button id="deleteAllButton">Удалить все</button>
+    </div>
+*/
+let deleteButton = document.querySelector("#deleteButton");
+let deleteAllButton = document.querySelector("#deleteAllButton");
+let keyInput = document.querySelector("#keyInput");
+
+//Удалить по ключю
+deleteButton.addEventListener("click", function () { 
+    localStorage.removeItem(keyInput.value);
+});
+//Удалить все
+deleteAllButton.addEventListener("click", function () { 
+    localStorage.clear();
+});
+
+
+
+//5.4. Робота из 'sessionStorage', практически та же что и с 'localStorage',
+//     Урок "4. JavaScript Базовый -  Lesson 13 - Cookeis and Web Storage.
+
+
+
+
+// ______6.  JSON - JavaScript Object Notation (Сохранения js кода в виде строки)!____________________________________!!!!!
+
+//6.1. Простой пример JSON
+// JSON - JavaScript Object Notation
+// это формат обмена данными, основанный на JavaScript. Формат не зависим от языка, и может использоваться
+// с разными языками программирования.
+
+let user = {
+    name: "Ivan",
+    age: 25,
+    email: "ivan@example.com"
+};
+
+
+let jsonString = JSON.stringify(user); // сохранение объекта в JSON (также этот процесс называется сериализацией)
+console.log(jsonString);//{"name":"Ivan","age":25,"email":"ivan@example.com"}
+
+localStorage.strObj = jsonString;//записали значения в localStorage
+
+let objectFromJson = JSON.parse(jsonString); // восстановление объекта из JSON строки (десериализация)
+console.log(objectFromJson);
+
+
+//_____7.   Событие storage возникает в момент обновления localStorage____________________________________!!!!!
+//          Описано в уроке "4. JavaScript Базовый -  Lesson 13 - Cookeis and Web Storage".
+/*
+    <button>CHANGE</button>
+*/
+let i = 0;
+
+localStorage.exemp = "abc";
+let btn = document.querySelector("button");
+
+btn.onclick = function(){
+    i++;
+    localStorage.exemp = i + "new!!!"
+}
+// Событие storage возникает в момент обновления localStorage
+// Событие не срабатывает на той же странице, на которой были внесены изменения в Storage
+
+// Для проверки работы данного примера запустите эту страницу вместе с примером 005-local-storage.html
+// (или любым другим, где происходит смена localStorage)
+window.addEventListener("storage", function (e) {
+    console.log(`key:${e.key}, oldValue:${e.oldValue}, newValue:${e.newValue}, url:${e.url}, storageArea:${e.storageArea}`);
+});
