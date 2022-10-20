@@ -39,6 +39,14 @@
     7. Событие storage возникает в момент обновления localStorage
     описано в уроке "4. JavaScript Базовый -  Lesson 13 - Cookeis and Web Storage"
 
+    8. Обработка исключений (Exception Handling);
+    8.1. Простой пример!
+    8.2. Упрощенный вариант обработки ошибок!
+    8.3. Когда работает try-catch, а когда нет!
+    8.4. error-object(параметры объекта)!
+    8.5. try-catch-finally! finally(срабатывает в любом случае)!
+    8.6. Создание своей ошибки!
+
 
 
 // ______1. Формы и элементы управления!____________________________________!!!!!
@@ -824,3 +832,146 @@ btn.onclick = function(){
 window.addEventListener("storage", function (e) {
     console.log(`key:${e.key}, oldValue:${e.oldValue}, newValue:${e.newValue}, url:${e.url}, storageArea:${e.storageArea}`);
 });
+
+
+
+
+
+//_____8.   Событие storage возникает в момент обновления localStorage____________________________________!!!!!
+/*
+    Исключения – неожиданные события, прерывающие нормальную работу кода и возникающие во время исполнения сценария.
+    Обработка исключения осуществляется с помощью ключевых слов:
+    try, catch, finally
+*/
+//8.1. Простой пример!
+/*  HTML
+    <div>
+        <p id="name"></p>
+        <p id="age"></p>
+    </div>
+*/
+let jsonWithError = '{"name" : "Ivan", "age" = 20}';
+let jsonOk = '{"name" : "Ivan", "age" : 20}';
+let obj;
+
+// try - блок кода, в котором может возникнуть ошибка (исключение) на этапе выполнения
+// catch - блок кода, в который перейдёт выполнение, в случае если в блоке try возникнет ошибка
+// если блок try отработал без ошибок, код в блоке catch не срабатывает
+// если выполнить данный код без блока try...catch, в случае ошибки, сценарий прекратит выполнение
+// и все оставшиеся инструкции будут пропущены  
+try {
+    console.log("Начало блока try");
+    obj = JSON.parse(jsonWithError);
+    //obj = JSON.parse(jsonOk);
+    console.log("Конец блока try");
+} catch (error) {
+    obj = {
+        name: "no name",
+        age: "no age"
+    }
+    console.log("Блок catch");      //Блок catch  
+    console.log(error.name);        //SyntaxError
+    console.log(error.message);     //Unexpected token '=', ..."n", "age" = 20}" is not valid JSON
+}
+
+console.log("Конец сценария");
+document.querySelector("#name").innerHTML = `Name = ${obj.name}`;
+document.querySelector("#age").innerHTML = `Age = ${obj.age}`;
+
+
+//8.2. Упрощенный вариант обработки ошибок!
+let json = '{"name" : "Ivan", "age" = 20}';
+
+try {
+    let obj = JSON.parse(json);
+} catch {
+    // Блок catch, не принимающий объекта ошибки (исключения)
+    console.log("Ошибка во время восстановления объекта из JSON строки");
+}
+
+
+
+//8.3. Когда работает try-catch, а когда нет!
+// try-catch может отловить ошибки этапа выполнения
+// Синтаксические ошибки не могут быть обработаны в блоке catch
+try {
+     lat test = 10; // убрать комментарий
+} catch(error) {
+    console.log(error.name);
+    console.log(error.message);
+}
+//РАБОТАТЬ НЕ БУДЕТ!
+
+
+try {
+    console.log(name);
+} catch {
+
+}
+console.log("NEXT");
+//Работать будет!
+
+
+//8.4 error-object(параметры объекта)!
+function func1() {
+        func2();
+    }
+
+    function func2() {
+        func3();
+    }
+
+    function func3() {
+        let json = '{"name" : "Ivan", "age" = 20}';
+        let obj = JSON.parse(json);
+    }
+
+    try {
+        func1();
+    } catch (error) { // объект исключения
+        console.log(error.name); // имя ошибки
+        console.log(error.message); // текстовое сообщение с деталями ошибки
+        console.log(error.stack); // стек вызовов (строка, содержащая последовательность вызовов, которые привели к ошибке)
+    }
+
+
+//8.5. try-catch-finally! finally(срабатывает в любом случае)!
+// finally - блок кода, который гарантировано выполняется, не зависимо от того, была ли ошибка в блоке try
+// или нет.
+let jsonWithError = '{"name" : "Ivan", "age": 20}';
+console.time("parsing"); // console.time - начало замера времени
+try {
+    let obj = JSON.parse(jsonWithError);
+} catch (error) {
+    console.log(error.name);
+    console.log(error.message);
+} finally {
+    console.timeEnd("parsing"); // console.time - завершение замера времени и вывод результатов
+}
+
+//еще пример!
+let jsonStr = '{"name" : "Ivan", "age" : 20}';
+parse(jsonStr)
+
+function parse(str) {
+    console.time("parsing");
+    try {
+        let obj = JSON.parse(str);
+        return obj;
+    } catch (error) {
+        console.log(error.name);
+        console.log(error.message);
+    } finally {
+        // блок finally срабатывает даже при наличии return на строке 20
+        console.timeEnd("parsing");
+    }
+}
+ 
+//8.6. Создание своей ошибки!
+try {
+    let ex = new Error("Произошла ошибка");
+    throw ex; // оператор throw генерирует ошибку. В качестве объекта ошибки может быть любой объект с любыми свойствами.
+} catch (error) {
+    console.log(error.name);
+    console.log(error.message);
+}
