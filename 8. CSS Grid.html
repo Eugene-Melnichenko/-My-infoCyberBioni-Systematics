@@ -1,0 +1,248 @@
+<!-- 
+    1. CSS Grid Layout.
+    1.1. Примеры использования .grid;
+    1.2. Настройки для ячеек .grid;
+    1.3. Шаблони .grid;
+    1.4. Вложенная ячейка;
+ -->
+
+<!--  ______1.CSS Grid Layout. ____________________________________ -->
+<!-- 
+	CSS Grid Layout – представляет собой двухмерную сетку на которой предполагается размещать 
+	элементы пользовательского интерфейса. Элементы можно расположить соответственно строкам и столбцам.
+
+	Grid представляет собой пересекающийся набор горизонтальных и вертикальных линий - один набор 
+	определяет столбцы, а другой строки. Элементы могут быть помещены в сетку, соответствуя строкам и столбцам.
+ -->
+
+
+<!-- 1.1. Примеры использования .grid -->
+<style>
+.grid {
+    /*Grid разметка контейнера*/
+    display: grid; /*Занимает всю ширину*/
+    display: inline-grid; /*Занимает только нужную*/
+
+	/*указываем количество колонок (в данном случае 3) по 200px*/
+    /*grid-template-columns: ширина 1 столбца, ширина 2 столбца....*/
+    grid-template-columns: 200px 300px 200px;
+    /*указываем 2 строки по 100px */
+    /*grid-template-rows: высота 1 ряда, ширина 2 ряда....*/
+    grid-template-rows: 200px 100px 100px; 
+
+    /*Сокращенная запись для отображения колонок и столбцов*/
+    /* grid-template:200px 150px 100px / 200px 300px 200px; */
+
+    /*Для оставшихся элементов, не включенных в столбцы и строки:*/  
+    grid-auto-rows:50px; /*Висота блоков*/
+    background-color: lightgray;
+
+    /*Отступы между колонками*/
+    column-gap: 25px;
+    /*Отступы между строками*/
+    row-gap: 5px;
+    /*указывает отступ между строками и колонками*/
+    gap:5px 25px;
+    /*отсупы gap суммируются с отупами margin: */
+
+
+
+    /* ДЛЯ ГИБКОСТИ ЭЛЕМЕНТОВ */
+    /*Единица длины fr представляет собой долю (fraction) доступного пространства
+    в грид-контейнере и позволяет создавать эластичные (flexible) грид-треки.*/
+    grid-template-columns: 3fr 1fr 1fr; 	/*Напоминает проценты 60%, 20%, 20%*/
+
+    grid-template-columns: 3fr 1fr 250px; 	/*3fr 1fr(динамические контейнеры) 250px(статический контейнеры)*/
+    grid-template-rows: 200px 150px 100px 50px;
+    column-gap: 25px;
+    row-gap: 5px;
+    background-color: lightgray;
+
+
+
+    /*Grid разметка контейнера*/
+    display: grid;
+    /*Функция повторения: 4 колонки по 1 фракции*/
+    grid-template-columns: repeat(4, 1fr);
+    /*Функция повторения: 1 колонка на 1 фракцию и 1 на 2 фракции. Повторять 4 раза*/
+    grid-template-columns: repeat(4, 1fr 2fr);
+    /*Первая колонка в 200px, затем - функция повторения: 1 колонка на 1 фракцию и 1 на 2 фракции. Повторять 4 раза*/
+    grid-template-columns: 200px repeat(2, 1fr 2fr);/*5 колонок*/
+    
+    gap: 20px;
+    background-color: lightgray;
+
+    /*Высота считается относительно родительского блока!*/
+    grid-auto-rows: 3fr 2fr 3fr;
+
+
+
+    /*Еще пример, Grid разметка контейнера функция minmax()*/
+    /*Grid разметка контейнера*/
+    display: grid;
+    /*При изменении размера -1 колонка будет ужиматься до 250px. По умолчанию 400px*/
+    grid-template-columns: minmax(250px, 400px) 1fr 1fr;  /*min 250px, max 450px*/
+    gap: 25px;
+    /*При изменении размера 1 строка будет ужиматься до 200px. По умолчанию на всю висоту контента*/
+    grid-template-rows: minmax(200px, auto) 200px 200px;
+    background-color: lightgray;
+
+
+    /*Еще пример, grid-auto-flow*/
+    display: grid;
+    grid-template-columns: minmax(250px, 400px) 1fr 1fr;
+    gap: 25px;
+    grid-template-rows: 1fr 2fr 3fr;
+    /*grid-auto-flow* - порядок отображения элементов на странице, вертикально или горизонтально! */
+    grid-auto-flow: column;
+
+    /*Еще пример ,auto-fill 'резиновые колонки, с перескоком строки!' */
+        .grid {
+            display: grid;
+            /*При изменении размера окна - элементы остаются с фиксированной шириной, и перемещаются ниже соседних*/
+            grid-template-columns: repeat(auto-fill, 300px);
+            /*При получении минимальной ширины 150px - колонки начинают перескакивать*/
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 25px;
+            background-color: lightgray;
+        }
+
+
+    /*Еще пример ,auto-fit' резиновые колонки, с перескоком строки!' похож на auto-fill НО 
+		auto-fit' - растягивает элементы по ширине блока!
+		auto-fill - НЕ растягивает элементы по ширине блока!
+    */
+        .grid {       
+            display: grid;
+            /*auto-fit - позволяет растянуть элементы на странице, и только при достижении 200px шириной 
+                переходить на нижний ряд*/
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));    
+            grid-template-rows:1fr 2fr 3fr 2fr 2fr;            
+            gap: 15px;          
+          
+            background-color: lightgray;
+        }
+}
+</style>
+
+<div class="grid">
+    <div>item-1</div>
+    <div>item-2</div>
+    <div>item-3</div>
+    <div>item-4</div>
+    <div>item-5</div>
+    <div>item-6</div>
+    <div>item-7</div>
+    <div>item-8</div>
+    <div>item-9</div>
+    <div>item-10</div>
+</div>
+
+ 
+
+ <!--  ______1.2 Настройки для ячеек .grid ____________________________________ -->
+ <style>
+    .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(3, 50px);
+            gap: 10px;
+            background-color: lightgray;
+        }
+
+            .grid div:nth-child(1) {
+                /*расположение единичного элемента в разметке сеток 5-1=4. элемент занимает 4 места*/
+                /*Начало расположения*/
+                grid-column-start: 1; /* С первой*/
+                /*Конец расположения*/
+                grid-column-end: 5;	  /* С первой По пятую ячейку(не включительно)!(1-4)
+                /* grid-column-end:-2; */
+                /* Сокращенная запись */
+                /* grid-column: 1/6; */ /* С первой По шестуй ячейку(не включительно)!(1-5) */
+
+                grid-column-start: 3 /*Начинаем с 3й ячейки пропуская1вую и 2рую!*/
+            }
+
+            .grid div {
+                background-color: #1b67a8;
+                border: 1px solid #212941;
+                border-radius: 5px;
+                padding: 8px 15px;
+                color: #ffffff;
+                font-size: 18px;
+            }
+
+                .grid div:nth-child(odd) {
+                    background-color: #1ac66c;
+                }
+</style>
+<div class="grid">
+    <div>Item-1</div>
+    <div>item-2</div>
+    <div>item-3</div>
+    <div>item-4</div>
+    <div>item-5</div>
+    <div>item-6</div>
+    <div>item-7</div>
+    <div>item-8</div>
+</div>
+
+<!--Еще пример! -->
+<style>
+	/*Для 1го элемента div, разместить по ширине от 1го до 5го блока, на 2рому ряду!*/
+	.grid div:nth-child(1) {
+	    grid-column: 1/5;
+	    /*Расположения рядов*/
+	    grid-row: 2;
+
+
+	   	grid-row: 2/5; /*С 2го по 5 ряд*/
+	}
+</style>
+
+
+
+<!--Еще примери, расположения ячеек! -->
+<style>
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 100px 100px 100px;
+    gap: 10px;
+    background-color: lightgray;
+    /*Позволяет определить горизонтальное выравнивание вложенных элементов контейнера*/
+    /*start, end, center, stretch*/
+    justify-items: stretch;
+    /*Позволяет определить вертикальное выравнивание вложенных элементов контейнера*/
+    /*start, end, center, stretch*/
+    align-items: center;
+}
+
+
+.grid div:nth-child(1) {
+    grid-column: 1/3;
+    grid-row: 1/3;
+    /*Выравнивание выбранного элемента по вертикали*/
+      /*start, end, center, stretch*/
+    align-self: start;
+     
+}
+
+.grid div:nth-child(2) {
+     /*Выравнивание выбранного элемента по горизонтали*/
+        /*start, end, center, stretch*/
+    justify-self:end;
+    grid-column: 3;
+    grid-row: 1/3;
+}
+</style>
+
+
+ <!--  ______1.3 Шаблони .grid (резиновая страница)____________________________________ -->
+ <!-- Описано в уроке
+	  1.  Принципы постороения разметки Grid, шаблоны сайтов (5. HTML5&CSS3 Advanced (продвинутий))!
+ -->
+ <!--  ______1.4 Вложенная ячейка.grid____________________________________ -->
+ <!-- Описано в уроке
+	  1.  Принципы постороения разметки Grid, шаблоны сайтов (5. HTML5&CSS3 Advanced (продвинутий))!
+ -->
