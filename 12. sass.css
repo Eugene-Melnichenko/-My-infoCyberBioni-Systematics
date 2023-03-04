@@ -1,0 +1,516 @@
+/*
+    Sass («Syntactically Awesome StyleSheets») — это препроцессор, представляющий собой промежуточное звено между таблицами стилей, 
+    и самими .css файлами, которые отправляются в браузер. 
+    Он заполняет пробелы в языке CSS, позволяя писать более быстрый, более продуктивный и более простой в поддержке код, 
+    полностью соблюдая принцип DRY (Don’t repeat yourself).
+
+    SASS известен как синтаксис отступов и является расширением CSS3, а именно, его синтаксиса SCSS («Sassy CSS»)- стильный CSS.
+    Преимущества:
+    1. Совместимость с различными версиями CSS. 
+    2. Большое количество функций для работы с переменными. 
+    3. Синтаксис – SASS или SCSS.
+*/
+
+
+/* SASS
+$blue: lightblue 
+$margin: 16px 
+$fontSize: 14px 
+
+.content border: 
+    1px solid $blue 
+    color: $blue
+
+.border 
+    padding: $margin / 2
+    margin: $margin / 2 
+    border-color: $blue
+*/
+
+
+/* SCSS
+$blue: lightblue;
+$margin: 16px;
+$fontSize: 14px; 
+
+.content { 
+    border: 1px solid $blue;
+    color: $blue;
+}
+
+.border {
+    padding: $margin / 2;
+    margin: $margin / 2;
+    border-color: $blue;
+}
+
+/* CSS
+.content { 
+    border: 1px solid lightblue; 
+    color: #217882;
+}
+
+.border { 
+    padding: 8px; 
+    margin: 8px; 
+    border-color: lightblue;
+}
+*/
+
+/*
+    Для того чтобы не скомпилировать файл .сss.map
+    -w ./ --no-source-map
+*/
+
+
+
+
+
+
+
+
+
+
+
+/* __________________________________________________________!!!
+    1.В основном используем scss!!! Он удобнее)))
+    1.1. Вложеность свойст scss (пример) 
+    1.2. Переменные заданные параметрами   
+    1.3. SCSS_import
+    1.4. SASS mixin
+    1.5. SCSS_extend
+    1.6. CSS_interpolation (інтерполяция)
+    1.7. CSS_colors
+    1.8. SCSS_if 
+    1.9. SCSS_each
+    1.10. SCSS_for, SCSS_while
+
+    2.LESS!
+*/
+
+
+
+/* ______1.1. Вложеность свойст scss (пример)  ____________________________________!!!!!*/
+/*scss*/
+.item {
+    width: 600px;
+    height: 500px;
+    background-color: lightblue;
+    margin: 50px auto;
+    border: 2px solid green;
+
+    h2 {
+        text-align: right;
+        color: greenyellow;
+    }
+
+    .container {
+        width: 400px;
+        height: 300px;        
+        //Вложенность множественных свойств
+        border: {
+            top: 13px solid red;
+            bottom: 23px dashed blue;
+            left: 15px double orange;
+            right: 3px dotted green;
+        }
+
+        margin: 20px auto;
+
+        h1 {
+            text-align: center;
+            color: rgba(230, 50, 50, 0.86);
+        }
+
+        .lead {
+            font-size: 10px;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: tomato;
+            border-radius: 30%;
+            border: 2px solid blue;
+           //Для расширения используется синтаксис - &
+            // & - обращение к родительскому элементу
+            &:hover {
+                border: none;
+                color: hsl(0, 100%, 50%);
+                padding-left: 30px;
+                font-size: 2rem;
+            }
+        }
+    }
+}
+
+/*scss*/
+.item {
+    width: 600px;
+    height: 500px;
+    background-color: lightblue;
+    margin: 50px auto;
+    border: 2px solid green;
+  }
+  .item h2 {
+    text-align: right;
+    color: greenyellow;
+  }
+  .item .container {
+    width: 400px;
+    height: 300px;
+    border-top: 13px solid red;
+    border-bottom: 23px dashed blue;
+    border-left: 15px double orange;
+    border-right: 3px dotted green;
+    margin: 20px auto;
+  }
+  .item .container h1 {
+    text-align: center;
+    color: rgba(230, 50, 50, 0.86);
+  }
+  .item .container .lead {
+    font-size: 10px;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+  }
+  .item .container a {
+    text-decoration: none;
+    color: tomato;
+    border-radius: 30%;
+    border: 2px solid blue;
+  }
+  .item .container a:hover {
+    border: none;
+    color: hsl(0, 100%, 50%);
+    padding-left: 30px;
+    font-size: 2rem;
+  }
+
+  
+/* ______1.2. Переменные заданные параметрами  ____________________________________!!!!!
+$size: 100px;
+$colorG: green;
+$colorR: red;
+*/
+.item {
+    /*Препроцессор позволяет выполнять операции:
+        Сложение, вычитание, умножение, деление, деление по модулю*/
+    width: $size*6;
+    height: $size*6;
+    /*lighten -функция позволяет осветлить выбранный цвет (цвет значение, на которое нужно осветлить -в %)
+        darken - затемнение
+    */
+    background-color: lighten($colorR, 40%);
+    margin: $size/2 auto;
+    border: $size/50 solid $colorG;
+
+    h2 {
+        text-align: right;
+        color: lighten($colorG, 50%);
+    }
+
+    .container {
+        width: $size*4;
+        height: $size*3;
+        border: $size/33 solid $colorG;
+        margin: $size/5 auto;
+
+        h1 {
+            text-align: center;
+            color: $colorR;
+            opacity: 0.5;
+        }
+
+        .lead {
+            font-size: $size/10;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: lighten($colorR, 30%);
+            border-radius: $size/4;
+            border: $size/25 solid blue;
+        }
+    }
+}
+
+
+
+/* ______1.3. SCSS_import ____________________________________!!!!! */
+/*
+    Определяем, какие необходимо подключать файлы scss на страницу
+    У Файл main.scss, подключаем 2 файла (main.scss, header.scss) со стилями
+*/
+
+/*main.scss*/
+@import 'header';
+@import 'footer';
+
+.item {
+    width: $size*6;
+    height: $size*6;
+    background-color: lighten($colorR, 40%);
+    margin: $size/2 auto;
+    border: $size/50 solid $colorG;
+}
+
+/* _footer.scss */ 
+    footer {
+        width:100%;
+    /*Есть возможность получать переменные из других файлов*/
+    height:$size/2;
+    .container {
+        background-color: $colorR;
+        opacity:0.5;
+        h3, p {
+            margin-left:$size/3;
+            display:inline-block;
+            color: blue;
+            font-size:$size/7;
+            font-weight:bold;
+        }
+    }
+    }
+
+/* _header.scss */
+    /*Добавление собственной переменной*/
+    $headerSize: 10px;
+
+    body {
+        margin:0;
+        padding:0;
+    }
+
+    header {
+        width:100%;
+        height:$headerSize*4;
+        border:$headerSize/5 solid green;
+        background-color:aqua;
+        .nav {
+            margin:$headerSize*2 auto;
+            li {display:inline;
+                a{
+                    text-decoration:none;
+                    &:hover{
+                        font-size:$headerSize*2;
+                    }
+                }
+            }
+        }
+    }
+
+
+/* ______1.4. SCSS_import ____________________________________!!!!! */
+/*
+    Mixin – подобие функции, которая может принять аргумент, выполнить огромный объем работы 
+    и выдать результат в зависимости от входного параметра.
+
+    Миксин объявляется директивой @mixin, после объявления должно быть указано имя миксин.
+    Вызывается директивой @include, которая принимает имя миксина и передаваемые аргументы, если такие имеют место быть.
+
+    Описано в уроке 7. Sass основы
+*/
+
+/* _mixin.scss */
+@mixin abc($bg: yellow, $fs: 5px){
+    color: red;
+    background-color: $bg;
+    font-size: $fs;
+}
+
+/*main.scss*/
+.item {
+    width: $size*6;
+    height: $size*7;
+    background-color: lighten($colorR, 40%);
+    margin: $size/2 auto;
+    border: $size/50 solid $colorG;
+    @include abc(green, 40px);  /* _mixin.scss */
+
+        h1 {
+            text-align: center;
+            color: $colorR;
+            opacity: 0.5;
+            @include abc();  /* _mixin.scss */
+        }
+    }
+}
+
+
+/* ______1.5. SCSS_extend (Шаблон кода, который не принимает параметры!)____________________________________!!!!! */
+/*Селекторы шаблоны %name*/
+%base-class {
+    min-height: $size/20;
+    width: $size*2;
+    position: relative;
+    top: $size/2;
+    left: $size/2;
+    color: darken($colorG, 10%);
+}
+
+h5 {
+    /*Подключаем шаблон-класс.*/
+    @extend %base-class;
+}
+
+/*Еще пример*/
+.lead {
+    /*Расширяем свойства для элемента с классом .lead - добавляя ему свойства от элемента с классом back;*/
+    @extend .back;
+    /*Включение mixin в элемент*/
+    @include whiteSpace(pre-wrap);
+    font-size: $size/10;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+/* ______1.6. CSS_interpolation (інтерполяция)____________________________________!!!!! */
+$size: 100px;
+$colorG: green;
+$colorR: red;
+$old: старый;
+$new: новый;
+$box: box;
+@import 'mixin';
+.item {
+    width: $size*6;
+    height: $size*6;
+    background-color: lighten($colorR, 40%);
+    margin: $size/2 auto;
+    border: $size/50 solid $colorG;
+    /*Интерполяция переменной*/
+    box-sizing: border-#{$box};
+    /*Интерполяция — это получение нового значения, используя другие.
+        Для получения нового значение переменной, благодаря интегрирования в значения другой.
+        Без данного преобразования нельзя вставить в строку - переменную.
+    */
+    .back {
+        color: $colorG;
+        &::after {
+            content: "#{$old} контент будет заменен на #{$new}";
+        }
+    }
+    h2 {
+        text-align: right;
+        color: lighten($colorG, 50%);
+    }
+    .container {
+        width: $size*4;
+        height: $size*3;
+        border: $size/33 solid $colorG;
+        /*Включение mixin в элемент*/
+        @include border(20px);
+        margin: $size/5 auto;
+        /*Интерполяция переменной*/
+        box-sizing: content-#{$box};
+        h1 {
+            text-align: center;
+            color: $colorR;
+            opacity: 0.5;
+        }
+        .lead {
+            /*Включение mixin в элемент*/
+            @include whiteSpace(pre-wrap);
+            font-size: $size/10;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        a {
+            /*Использование mixin и переменной*/
+            text-decoration: none;
+            color: lighten($colorR, 30%);
+            @include border($size/4);
+        }
+    }
+}
+
+/* ______1.7. CSS_colors ____________________________________!!!!! */
+/* Описано в уроке 7. Sass основы */
+
+
+/* ______1.8. SCSS_if ____________________________________!!!!! */
+$size: 70;
+
+
+.item5 {
+    /*Задаем условие для вычисления*/
+    @if $size>100 {
+        background-color:$color1;
+    } @else if $size>=50{
+           background-color:$color2;
+      }
+      @else {
+          background-color:$color3+$color4;
+          font-size:$size/6+px;
+      }
+}
+
+/* ______1.9. SCSS_each ____________________________________!!!!! */
+/*scss*/
+    $size: 100%;
+    $size2: 100px;
+    div {
+        width: $size2*2;
+        height: $size2*1.3;
+        border: $size2/30 solid black;
+        float: left;
+        margin: {
+
+            left: $size2/5;
+            top: $size2/4;
+        }
+    }
+    /*Для прохождения по списку значений, а не просто чисел, можно использовать директиву @each*/
+    @each $item in ferrary, bugatti, lamborghini, maserati{
+        .car-#{$item} {
+            background-image: url('../010_SCSS_each/img/#{$item}.jpg');
+            background-size:$size $size;
+        }
+    }
+/*CSS*/
+    @charset "UTF-8";
+    div {
+    width: 200px;
+    height: 130px;
+    border: 3.3333333333px solid black;
+    float: left;
+    margin-left: 20px;
+    margin-top: 25px;
+    }
+
+    /*Для прохождения по списку значений, а не просто чисел, можно использовать директиву @each*/
+    .car-ferrary {
+    background-image: url("../010_SCSS_each/img/ferrary.jpg");
+    background-size: 100% 100%;
+    }
+
+    .car-bugatti {
+    background-image: url("../010_SCSS_each/img/bugatti.jpg");
+    background-size: 100% 100%;
+    }
+
+    .car-lamborghini {
+    background-image: url("../010_SCSS_each/img/lamborghini.jpg");
+    background-size: 100% 100%;
+    }
+
+    .car-maserati {
+    background-image: url("../010_SCSS_each/img/maserati.jpg");
+    background-size: 100% 100%;
+    }/*# sourceMappingURL=main.css.map */
+
+
+
+/* ______1. 10. SCSS_for, SCSS_while ____________________________________!!!!! */
+/* Описано в уроке 7. Sass основы */
+
+
+
+
+/* ______12.LESS!____________________________________!!!!! */
+/* Описано в уроке 7. Sass основы */
