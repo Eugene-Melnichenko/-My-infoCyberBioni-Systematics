@@ -30,7 +30,40 @@
     14. this - контекст функции. This - переменная, которая устанавливается при запуске функции.
     15. arrow (стрелочние) function - специальный синтаксис определения функций
     16. Перегрузка функций
+
+    17. Классы
+    17.1. Конструктор - Код который сразу запускается при инициализации объекта!
+    17.2 Модификаторы доступа (public, private, protected)!
+    17.3 Eeadonly - с помощью ключевого слова readonly можно создать поля только на чтение.
+    17.4 Короткая запись создание конструктора!
+    17.5. accessors (getter, setter).
+    17.6. static (Статическое свойство. Общее для всех экземпляров).
+
+    18. Наследование
+    18.1. .super вызов метода родительского класса.
+    18.2. Абстрактные классы (Класс от которого можно только наследоваться, создать экземпляр нельзя).
+
+    19. Интерфейсы
+    19.1. Интерфейсы, примеры!
+    19.2. readonly - свойство может быть установленно только в момент создания объекта!
+    19.3. Интерфейс описывает сигнатуру функции!
+    19.4. implements - ключевое слово для реализации интерфейса в классе!
+
+
 */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 // ______1. Tsconfig.json____________________________________!!!!!
 /*
 Tsconfig.json – файл, который указывает на то, что текущая директория является
@@ -293,7 +326,7 @@ test2.apply(someTestObj, [30, 40]); // установка контекста, в
 //В метод также передаётся набор аргументов, которые будут установлены перед переданными в привязанную функцию аргументами при её вызове.
 var newFunc = test2.bind(someTestObj, 50); // установка контекста, вариант 3    //110 {name: 'test object'}
 newFunc(60);
-//15. arrow (стрелочние) function - специальный синтаксис определения функций
+//15. ______arrow (стрелочние) function - специальный синтаксис определения функций____________________________!
 // arrow function - специальный синтаксис определения функций
 // в переменной increment находиться функция, которая принимает один параметр и возвращает его значение увеличиное на 1.
 var increment = function (x) { return x + 1; };
@@ -322,3 +355,387 @@ function showMessage(message) {
 showMessage(1);
 showMessage("test");
 // showMessage(true); // compile error
+//17. _______Классы__Простой пример_______________________________!
+var User = /** @class */ (function () {
+    function User() {
+    }
+    User.prototype.print = function () {
+        console.log(this.firstName + " " + this.lastName);
+    };
+    return User;
+}());
+var user1 = new User(); // создаем экземпляр класса User вызывая конструктор и инициализируем переменную user1
+user1.firstName = "Ivan"; // присвоение значения свойству firstName на экземпляре user1
+user1.lastName = "Ivanov";
+var user2 = new User(); // создаем экземпляр класса User вызывая конструктор и инициализируем переменную user2
+user2.firstName = "John"; // присвоение значения свойству firstName на экземпляре user2
+user2.lastName = "Doe";
+user1.print(); // вызов метода print на экземпляре user1
+user2.print(); // вызов метода print на экземпляре user2
+//17.1. _______Конструктор - Код который сразу запускается при инициализации объекта!_______________________________!
+/*
+    Конструктор – специальный метод, который используется для инициализации экземпляра.
+    В теле класса конструктор создается с помощью ключевого слова constructor.
+    При создании экземпляра класса для вызова конструктора необходимо использовать ключевое слово new.
+*/
+//Простой пример!
+var MyClass1 = /** @class */ (function () {
+    // определение конструктора для инициализации класса
+    function MyClass1() {
+        console.log("Работает конструктор класса MyClass1");
+        this.value = "Hello world";
+    }
+    return MyClass1;
+}());
+console.log("Создание экземпляра класса MyClass1");
+var temp = new MyClass1(); // вызов конструктора, определенного на строке 5
+console.log(temp.value);
+//Еще пример
+var Student = /** @class */ (function () {
+    function Student(c_firstName, c_age) {
+        this.firstName = c_firstName;
+        this.age = c_age;
+    }
+    Student.prototype.print = function () {
+        console.log("Student - " + this.firstName + ", age - " + this.age + " years.");
+    };
+    return Student;
+}());
+var student1 = new Student("Ivan", 25); // вызов конструктора с передачей значений
+var student2 = new Student("John", 24);
+student1.print();
+student2.print();
+//___________17.2 Модификаторы доступа (public, private, protected)!!_______________________________!
+/*
+    public, private, protected – ключевые слова, модификаторы доступа. С их помощью определяется видимость членов класса.
+
+    public – видимый для всех (в классе и за пределами класса);
+    private – видимый только в пределах класса (за пределами класса доступ отсутствует);
+    protected – видимый в пределах класса и в классах наследниках (за пределами класса и классов наследниках доступ отсутствует).
+
+    Все члены классов без модификатора доступа, по умолчанию используют модификатор доступа public
+*/
+var Employee = /** @class */ (function () {
+    function Employee(name, position) {
+        this.name = name;
+        this.position = position;
+        this.company = "ITVDN";
+    }
+    Employee.prototype.printToConsole = function () {
+        console.log("Employee " + this.name + ", position - " + this.position + ", company - " + this.company);
+    };
+    return Employee;
+}());
+var emp1 = new Employee("Ivan", "Developer");
+emp1.name = "John";
+emp1.position = "Team Lead";
+//emp1.company = "..."; // [ts] Property 'company' is private and only accessible within class 'Employee'
+emp1.printToConsole();
+//___________17.3 Eeadonly - с помощью ключевого слова readonly можно создать поля только на чтение!
+// Такое поле может быть инициализировано в момент его создания или в конструкторе 
+var Dog = /** @class */ (function () {
+    function Dog(name) {
+        this.numberOfLegs = 4;
+        this.name = name;
+    }
+    return Dog;
+}());
+var dog = new Dog("Sharik");
+console.log(dog.name);
+console.log(dog.numberOfLegs);
+//dog.numberOfLegs = 5; // [ts] cannot assign to 'numberOfLags' because it is a constant or read-only property
+//dog.name = "";_______________________________!
+//___________17.4 Короткая запись создание конструктора______________!
+var Person = /** @class */ (function () {
+    // Если при определении параметров в конструкторе указать для них модификаторы доступа
+    // Эти параметры автоматически станут полями класса с соответствующим уровнем доступа
+    // и значениями, которые будут установлены при вызове конструктора.
+    function Person(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    Person.prototype.print = function () {
+        console.log(this.name + " " + this.age);
+    };
+    return Person;
+}());
+var person = new Person("Jhon", 25);
+person.print();
+person.name = "111"; // поле public
+//person.age = 111; // поле private
+//___________17.5. accessors (getter, setter)_______________________!
+var Rectangle = /** @class */ (function () {
+    function Rectangle() {
+    }
+    // метод для получения значения закрытого свойства
+    Rectangle.prototype.getWidth = function () {
+        return this._width;
+    };
+    // метод для установки значения закрытому свойству
+    Rectangle.prototype.setWidth = function (value) {
+        if (value <= 0) {
+            this._width = 1;
+        }
+        else {
+            this._width = value;
+        }
+    };
+    Object.defineProperty(Rectangle.prototype, "height", {
+        // accessors - механизм, который позволяет перехватить обращение к члену объекта на запись или чтение.
+        // getter 
+        get: function () {
+            return this._height;
+        },
+        // setter
+        set: function (value) {
+            if (value <= 0) {
+                this._height = 1;
+            }
+            else {
+                this._height = value;
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Rectangle.prototype.calculateArea = function () {
+        return this._width * this._height;
+    };
+    return Rectangle;
+}());
+var rect1 = new Rectangle();
+rect1.setWidth(100); // установка ширины с помощью метода
+rect1.height = (-20); // установка высоты с помощью setter. Запускается метод set на строке 28, значение 20 передается в качестве параметра
+console.log(rect1.getWidth()); // чтение значение закрытого свойства с помощью метода
+console.log(rect1.height); // чтение значение закрытого свойства с помощью аксесора. Тут вызывается метод get со строки 23
+var rectArea = rect1.calculateArea();
+console.log(rectArea);
+//___________17.6. static (Статическое свойство. Общее для всех экземпляров)_______________________!
+var Point = /** @class */ (function () {
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    return Point;
+}());
+var Grid = /** @class */ (function () {
+    function Grid() {
+        this.points = [];
+    }
+    Grid.prototype.add = function (point) {
+        this.points.push(point);
+    };
+    Grid.prototype.buildGrid = function () {
+        for (var i = 0; i < this.points.length; i++) {
+            console.log(this.points[i]);
+        }
+    };
+    Grid.origin = { x: 0, y: 0 }; // Статическое свойство. Общее для всех экземпляров
+    return Grid;
+}());
+var grid1 = new Grid();
+grid1.add(Grid.origin);
+grid1.add(new Point(1, 2));
+grid1.add(new Point(10, 20));
+grid1.add(new Point(12, 24));
+grid1.buildGrid();
+/*
+    {x: 0, y: 0}
+    Point {x: 1, y: 2}
+    Point {x: 10, y: 20}
+    Point {x: 12, y: 24}
+*/
+var grid2 = new Grid();
+grid2.add(Grid.origin);
+grid2.add(new Point(6, 2));
+grid2.add(new Point(7, 2));
+grid2.add(new Point(1, 24));
+grid2.buildGrid();
+/*
+    {x: 0, y: 0}
+    Point {x: 6, y: 2}
+    Point {x: 7, y: 2}
+    Point {x: 1, y: 24}
+*/
+//___________18. Наследование_______________________!
+/*
+    Наследование - механизм создания класса посредством расширения уже существующего класса.
+    extends – ключевое слово, которое определяет какой класс будет базовым (родительским) для текущего.
+    Класс наследник получает от родителя свойства и методы
+*/
+var Base = /** @class */ (function () {
+    function Base() {
+        this.value1 = "private value 1";
+        this.value2 = "public value 2";
+        this.value3 = "protected value 3";
+    }
+    // constructor(v1, v2, v3) {
+    //     this.value1 = v1;
+    //     this.value2 = v2;
+    //     this.value3 = v3;
+    // }
+    Base.prototype.method1 = function () {
+        console.log("private method 1 call.");
+    };
+    Base.prototype.method2 = function () {
+        console.log("public method 2 call.");
+    };
+    //Модификатор protected определяет поля и методы, которые из вне класса видны только в классах-наследниках:
+    Base.prototype.method3 = function () {
+        console.log("protected method 3 call.");
+    };
+    return Base;
+}());
+var Derived = /** @class */ (function (_super) {
+    __extends(Derived, _super);
+    function Derived() {
+        var _this = _super.call(this) || this;
+        //если в классе что наследуется нету конструктора метод super() не обезятелен!
+        //super("v1","v2","v3");
+        console.log("public property = " + _this.value2);
+        console.log("protected property = " + _this.value3);
+        // this.method1(); // метод private, скрыт  
+        _this.method2(); // public - открыт для всех  
+        _this.method3(); // protected - доступен, так как данный класс является наследником
+        return _this;
+    }
+    return Derived;
+}(Base));
+var derived1 = new Derived();
+// доступен только метод method2, так как он public. Остальные методы не доступны так как данный код находится за пределами класса
+derived1.method2();
+console.log(derived1.value2);
+//___________18.1. .super вызов метода родительского класса_______________________!
+// Более подробно описано в видеоуроке "TypeScript - 2. Классы и интерфейсы"
+// базовый тип данных
+var Shape = /** @class */ (function () {
+    function Shape(name) {
+        this.name = name;
+    }
+    Shape.prototype.getInfo = function () {
+        return "This is " + this.name + ".";
+    };
+    return Shape;
+}());
+// производный тип данных
+var Rect = /** @class */ (function (_super) {
+    __extends(Rect, _super);
+    function Rect(width, height) {
+        var _this = _super.call(this, "Rectangle") || this;
+        _this.width = width;
+        _this.height = height;
+        return _this;
+    }
+    Rect.prototype.getInfo = function () {
+        var baseInfo = _super.prototype.getInfo.call(this); // вызов метода родительского класса
+        return baseInfo + " Height = " + this.height + ", Width = " + this.width;
+    };
+    return Rect;
+}(Shape));
+//.......полная часть кода описано в видеоуроке "TypeScript - 2. Классы и интерфейсы"
+//___________18.2. Абстрактные классы (Класс от которого можно только наследоваться, создать экземпляр нельзя)._______________________!
+/*
+    Абстрактный класс - это класс, который может выступать только в роли базового класса. Создать экземпляр абстрактного класса не получится.
+    Абстрактный метод - это метод, который не имеет реализации в текущем классе но обязательно должен быть реализован в производном классе.
+    Абстрактные методы могут создаваться только в абстрактных классах.
+*/
+// abstract - ключевое слово, которое позволяет создавать абстрактные методы и абстрактные классы.
+// абстрактный класс - это класс, который может выступать только в роли базового класса. Создать экземпляр абстрактного класса не получится.
+// абстрактный метод - это метод, который не имеет реализации в текущем классе но обязательно должен быть реализован в производном классе.
+// абстрактные методы могут создаваться только в абстрактных классах.
+var Animal = /** @class */ (function () {
+    function Animal(name) {
+        this.name = name;
+    }
+    //abstract prop:string; // абстрактное свойство
+    Animal.prototype.move = function () {
+        console.log(this.name + " передвигается");
+    };
+    return Animal;
+}());
+var Cat = /** @class */ (function (_super) {
+    __extends(Cat, _super);
+    function Cat() {
+        return _super.call(this, "Кот") || this;
+    }
+    Cat.prototype.makeSound = function () {
+        console.log("Мяу-Мяу");
+    };
+    return Cat;
+}(Animal));
+var Cow = /** @class */ (function (_super) {
+    __extends(Cow, _super);
+    function Cow() {
+        return _super.call(this, "Корова") || this;
+    }
+    Cow.prototype.makeSound = function () {
+        console.log("Му-у-у-у");
+    };
+    return Cow;
+}(Animal));
+var murzik = new Cat();
+murzik.makeSound();
+murzik.move();
+var burenka = new Cow();
+burenka.makeSound();
+burenka.move();
+// функция printValue2 принимает параметр типа NamedValue
+// в качестве параметра можно передать экземпляр класса, который реализовал интерфейс
+// или объект, который по своей структуре подходит под указанный интерфейс. Использовать приведение типов как в большинстве других языков не нужно
+function printValue2(obj) {
+    console.log(obj.name);
+}
+var myObj3 = { value: 10, name: "World" };
+printValue2(myObj3); // myObj1 имеет свойство name
+var myObj4 = { data: 10, param: "Hello" };
+function drawRectangle(rect) {
+    if (rect.name) {
+        console.log("Name - " + rect.name);
+    }
+    console.log(rect.width + "*" + rect.height);
+}
+var rectangle1 = {
+    name: "Rectangle 1",
+    width: 100,
+    height: 75
+};
+var rectangle2 = {
+    width: 55,
+    height: 33
+};
+var rectangle3 = {
+    name: "Rectangle 3",
+    width: 100
+};
+drawRectangle(rectangle1);
+drawRectangle(rectangle2);
+var point = { x: 10, y: 20 };
+var myArray1 = function (value) {
+    return false;
+};
+// имена параметров не обязательно должны совпадать с именами в интерфейсе
+var myArray2 = function (data) {
+    return false;
+};
+// implements - ключевое слово для реализации интерфейса в классе
+// если члены интерфейса не будут определены в классе компилятор выдаст ошибку
+var DailyReport = /** @class */ (function () {
+    function DailyReport() {
+        this.name = "Daily Report";
+    }
+    DailyReport.prototype.build = function () {
+        return "some daili report data";
+    };
+    return DailyReport;
+}());
+var WeaklyReport = /** @class */ (function () {
+    function WeaklyReport() {
+        this.name = "Weakly Report";
+    }
+    WeaklyReport.prototype.build = function () {
+        return "some weakly report data";
+    };
+    return WeaklyReport;
+}());
+console.log(new DailyReport().build());
+console.log(new WeaklyReport().build());
