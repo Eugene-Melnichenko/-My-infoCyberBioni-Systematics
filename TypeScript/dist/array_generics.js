@@ -1,3 +1,4 @@
+"use strict";
 /*  TypeScript – типизированное надмножество языка JavaScript, компилируется в чистый JavaScript.
 
     Для роботи з примерами пишем команди в разных командних строках:
@@ -21,6 +22,11 @@
 
     8. Generics, пройто пример.
     9. Generics Class, пройто пример (Более подробно описано в уроке "TypeScript - 3. Generics").
+
+
+    10. Пространства имен
+    11. Модули
+
 */
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -40,6 +46,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
+exports.__esModule = true;
+exports.UrlValidator = exports.CreditCardValidator = void 0;
 //_____________1. forEach - обход всех элементов массива и запуск определенной функции для значения каждого элемента.____________!
 var array1 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 var sum = 0;
@@ -185,3 +193,124 @@ myGenericString.value = "world";
 console.log(myGenericString.method2()); //world
 //Более подробно описано в уроке "TypeScript - 3. Generics"
 //1 година 10хв.
+/*______10.Пространства имен._____________ */
+//Пространство имен - механизм для группировки кода и определения отдельных областей видимости.
+// Код, помещенный в пространство имен, находиться в области видимости пространства имен, а не в глобальной области видимости.
+// Для того, чтобы элементы пространства имен были доступны за пределами пространства имен, необходимо использовать ключевое слово export.
+// определение пространства имен с именем Sample1
+var Sample1;
+(function (Sample1) {
+    // класс будет доступен за пределами пространства Sample1
+    var MyClass1 = /** @class */ (function () {
+        function MyClass1() {
+        }
+        MyClass1.prototype.message = function () {
+            console.log("Sample1.MyClass1.message");
+        };
+        return MyClass1;
+    }());
+    Sample1.MyClass1 = MyClass1;
+    var MyClass2 = /** @class */ (function () {
+        function MyClass2() {
+        }
+        MyClass2.prototype.message = function () {
+            console.log("Sample1.MyClass2.message");
+        };
+        return MyClass2;
+    }());
+})(Sample1 || (Sample1 = {}));
+var Sample2;
+(function (Sample2) {
+    var MyClass1 = /** @class */ (function () {
+        function MyClass1() {
+        }
+        MyClass1.prototype.message = function () {
+            console.log("Sample2.MyClass1.message");
+        };
+        return MyClass1;
+    }());
+    Sample2.MyClass1 = MyClass1;
+    var MyClass2 = /** @class */ (function () {
+        function MyClass2() {
+        }
+        MyClass2.prototype.message = function () {
+            console.log("Sample2.MyClass2.message");
+        };
+        return MyClass2;
+    }());
+})(Sample2 || (Sample2 = {}));
+// следующий код находится в глобальной области видимости.
+// Использование класса MyClass1 из пространства имен Sample1
+var temp1 = new Sample1.MyClass1();
+temp1.message(); //Sample1.MyClass1.message
+var temp2 = new Sample2.MyClass1();
+temp2.message(); //Sample2 .MyClass1.message
+//_____________ЕЩЕ ПРИМЕР____________!
+var Shapes;
+(function (Shapes) {
+    var Circle = /** @class */ (function () {
+        function Circle() {
+            console.log("Circle");
+        }
+        return Circle;
+    }());
+    Shapes.Circle = Circle;
+    var Square = /** @class */ (function () {
+        function Square() {
+            console.log("Square");
+        }
+        return Square;
+    }());
+    Shapes.Square = Square;
+    var Complex;
+    (function (Complex) {
+        var Image = /** @class */ (function () {
+            function Image() {
+                console.log("Image");
+            }
+            return Image;
+        }());
+        Complex.Image = Image;
+        var Animation = /** @class */ (function () {
+            function Animation() {
+                console.log("Animation");
+            }
+            return Animation;
+        }());
+        Complex.Animation = Animation;
+    })(Complex = Shapes.Complex || (Shapes.Complex = {}));
+})(Shapes || (Shapes = {}));
+// создание псевдонима с именем complex для пространства имен Shapes.Complex
+var complex = Shapes.Complex;
+var img1 = new complex.Image();
+var img2 = new Shapes.Complex.Image(); // тоже что и 22 строка
+var CreditCardValidator = /** @class */ (function () {
+    function CreditCardValidator() {
+    }
+    CreditCardValidator.prototype.validate = function (value) {
+        return false;
+    };
+    return CreditCardValidator;
+}());
+exports.CreditCardValidator = CreditCardValidator;
+var UrlValidator = /** @class */ (function () {
+    function UrlValidator() {
+    }
+    UrlValidator.prototype.validate = function (value) {
+        return false;
+    };
+    return UrlValidator;
+}());
+exports.UrlValidator = UrlValidator;
+// import { Validator, CreditCardValidator } from "01-validators"; // импорт нескольких типов 
+var PhoneNumberValidator = /** @class */ (function () {
+    function PhoneNumberValidator() {
+    }
+    PhoneNumberValidator.prototype.validate = function (value) {
+        return true;
+    };
+    return PhoneNumberValidator;
+}());
+var phoneVal = new PhoneNumberValidator();
+console.log(phoneVal.validate("000-00-00"));
+//1.09 хв.!

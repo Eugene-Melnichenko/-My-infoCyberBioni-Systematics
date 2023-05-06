@@ -21,6 +21,11 @@
 
     8. Generics, пройто пример.
     9. Generics Class, пройто пример (Более подробно описано в уроке "TypeScript - 3. Generics").
+
+
+    10. Пространства имен
+    11. Модули
+
 */
 
 
@@ -210,3 +215,127 @@ console.log(myGenericString.method2()); //world
 
 //Более подробно описано в уроке "TypeScript - 3. Generics"
 //1 година 10хв.
+
+
+
+/*______10.Пространства имен._____________ */
+//Пространство имен - механизм для группировки кода и определения отдельных областей видимости.
+// Код, помещенный в пространство имен, находиться в области видимости пространства имен, а не в глобальной области видимости.
+// Для того, чтобы элементы пространства имен были доступны за пределами пространства имен, необходимо использовать ключевое слово export.
+
+// определение пространства имен с именем Sample1
+namespace Sample1 {
+
+    // класс будет доступен за пределами пространства Sample1
+    export class MyClass1 {
+        public message() {
+            console.log("Sample1.MyClass1.message");
+        }
+    }
+
+    class MyClass2 {
+        public message() {
+            console.log("Sample1.MyClass2.message");
+        }
+    }
+}
+namespace Sample2 {
+
+    export class MyClass1 {
+        public message() {
+            console.log("Sample2.MyClass1.message");
+        }
+    }
+
+    class MyClass2 {
+        public message() {
+            console.log("Sample2.MyClass2.message");
+        }
+    }
+}
+
+// следующий код находится в глобальной области видимости.
+// Использование класса MyClass1 из пространства имен Sample1
+let temp1 = new Sample1.MyClass1();
+temp1.message();    //Sample1.MyClass1.message
+
+
+let temp2 = new Sample2.MyClass1();
+temp2.message();    //Sample2 .MyClass1.message
+
+
+
+//_____________ЕЩЕ ПРИМЕР____________!
+namespace Shapes {
+    
+    export class Circle { 
+        constructor() { console.log("Circle"); }
+    }
+    export class Square { 
+        constructor() { console.log("Square"); }
+    }
+
+    export namespace Complex {
+        export class Image {
+            constructor() { console.log("Image"); }
+        }
+        export class Animation { 
+            constructor() { console.log("Animation"); }
+        }
+    }
+}
+
+// создание псевдонима с именем complex для пространства имен Shapes.Complex
+import complex = Shapes.Complex;
+
+let img1 = new complex.Image();
+let img2 = new Shapes.Complex.Image(); // тоже что и 22 строка
+
+
+
+
+/*______11. Модули.____________________________ */
+/*
+    Модуль - отдельный файл со своей областью видимости.
+    Переменные, функции, классы и другие языковые конструкции определенные в модуле не доступные за его пределами.
+    
+    Файл, в котором на верхнем уровне находиться import или export является модулем.
+    
+    Зависимости между модулями определяются с помощью ключевого слова import.
+    
+    Модули импортируются с помощью загрузчиков модулей. 
+    Во время выполнения загрузчик модуля ответственный за определение расположения модуля и его загрузку перед его выполнением.
+    
+    Загрузчики модулей - CommonJS, SystemJS, requier.j
+*/
+
+//Передаем файл 'export'
+export interface Validator {
+    validate(value: string): boolean;
+}
+
+export class CreditCardValidator implements Validator {
+    validate(value: string): boolean {
+        return false;
+    }
+}
+
+export class UrlValidator implements Validator {
+    validate(value: string): boolean {
+        return false;
+    }
+}
+
+import { Validator } from "01-validators"; // импорт интерфейса Validator из модуля 01-validators
+// import { Validator, CreditCardValidator } from "01-validators"; // импорт нескольких типов 
+
+class PhoneNumberValidator implements Validator {
+    validate(value: string): boolean {
+        return true;
+    }
+}
+
+let phoneVal = new PhoneNumberValidator();
+console.log(phoneVal.validate("000-00-00"));
+
+//1.09 хв.!
